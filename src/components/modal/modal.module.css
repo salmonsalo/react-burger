@@ -1,0 +1,12 @@
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 40px;
+  background-color: #1c1c21;
+  cursor: default;
+  z-index: 2;
+  width: 720px;
+  max-height: 718px;
+}
