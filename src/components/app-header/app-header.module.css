@@ -5,6 +5,10 @@
     align-items: center;
 }
 
+.nav_conteynir {
+    display: flex;
+}
+
 .link {
     composes: pl-5 pr-5 pb-4 pt-4 from '@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
     display: flex;

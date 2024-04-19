@@ -1,3 +1,5 @@
+import ingredientsDetailsStyle from "./ingredient-details.module.css";
+
 export default function IngredientDetails({
   img,
   name,
@@ -8,29 +10,18 @@ export default function IngredientDetails({
 }) {
   return (
     <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "0 100px 60px 100px",
-      }}
+      className={ingredientsDetailsStyle.content}
     >
       <img src={img} alt={name} />
       <p
-        className="text text_type_main-medium mt-4"
-        style={{ textAlign: "center", whiteSpace: "nowrap" }}
+        className={`${ingredientsDetailsStyle.name} text text_type_main-medium mt-4`}
       >
         {name}
       </p>
       <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "100%",
-        }}
-        className="mt-8"
+        className={`${ingredientsDetailsStyle.description} mt-8`}
       >
-        <div style={{ textAlign: "center" }}>
+        <div className={ingredientsDetailsStyle.item}>
           <p className="text text_type_main-default text_color_inactive">
             Калории,ккал
           </p>
@@ -38,7 +29,7 @@ export default function IngredientDetails({
             {calories}
           </p>
         </div>
-        <div style={{ textAlign: "center" }}>
+        <div className={ingredientsDetailsStyle.item}>
           <p className="text text_type_main-default text_color_inactive">
             Белки, г
           </p>
@@ -46,7 +37,7 @@ export default function IngredientDetails({
             {proteins}
           </p>
         </div>
-        <div style={{ textAlign: "center" }}>
+        <div className={ingredientsDetailsStyle.item}>
           <p className="text text_type_main-default text_color_inactive">
             Жиры, г
           </p>
@@ -54,7 +45,7 @@ export default function IngredientDetails({
             {fat}
           </p>
         </div>
-        <div style={{ textAlign: "center" }}>
+        <div className={ingredientsDetailsStyle.item}>
           <p className="text text_type_main-default text_color_inactive">
             Углеводы, г
           </p>

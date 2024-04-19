@@ -6,7 +6,6 @@ import {
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useState } from "react";
-import ModalOverlay from "../modal-overlay/modal-overlay";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 import PropTypes from "prop-types";
@@ -29,7 +28,7 @@ export default function BurgerConstructor({ ingredients }) {
   BurgerConstructor.propTypes = {
     ingredients: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.string,
+        _id: PropTypes.string,
         type: PropTypes.string,
         name: PropTypes.string,
         price: PropTypes.number,
@@ -37,13 +36,14 @@ export default function BurgerConstructor({ ingredients }) {
       })
     ).isRequired,
   };
+
   return (
     <section className="ml-10">
       <div className="pt-25">
         <div className="ml-4 mr-4">
           <div className={constuctorStyle.content}>
             {bunElement && (
-              <div key={bunElement.id}>
+              <div key={bunElement._id}>
                 <ConstructorElement
                   type="top"
                   isLocked={true}
@@ -59,14 +59,7 @@ export default function BurgerConstructor({ ingredients }) {
               {ingredients
                 .filter((ingredient) => ingredient.type !== "bun")
                 .map((ingredient) => (
-                  <div
-                    style={{
-                      display: "flex",
-
-                      alignItems: "center",
-                    }}
-                    key={ingredient.id}
-                  >
+                  <div className={constuctorStyle.element} key={ingredient._id}>
                     <DragIcon type="primary" />
                     <ConstructorElement
                       text={`${ingredient.name}`}
@@ -90,10 +83,10 @@ export default function BurgerConstructor({ ingredients }) {
               </div>
             )}
             <div
-              className="mt-6"
-              style={{ display: "flex", justifyContent: "end" }}
+              className={`${constuctorStyle.payment} mt-6`}
+
             >
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <div className={constuctorStyle.price}>
                 <p className="text text_type_digits-medium mr-2">600</p>
                 <CurrencyIcon type="primary" />
               </div>
@@ -107,11 +100,9 @@ export default function BurgerConstructor({ ingredients }) {
                 Оформить заказ
               </Button>
               {isModalOpen && (
-                <ModalOverlay onClose={closeModal}>
-                  <Modal onClose={closeModal}>
-                    <OrderDetails />
-                  </Modal>
-                </ModalOverlay>
+                <Modal onClose={closeModal}>
+                  <OrderDetails />
+                </Modal>
               )}
             </div>
           </div>

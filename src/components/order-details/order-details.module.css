@@ -1,0 +1,3 @@
+.content {
+    composes: content from "../ingredient-details/ingredient-details.module.css";
+}

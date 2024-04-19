@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
+import appStyle from "./app.module.css"
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-// import data from "./utils/data";
+
 const api = "https://norma.nomoreparties.space/api/ingredients";
+
 function App() {
   const [dataIngredients, setDataIngredients] = useState([]);
 
@@ -26,9 +27,9 @@ function App() {
   }, [])
 
   return (
-    <div className="App">
+    <div className={appStyle.app}>
       <AppHeader />
-      <main style={{ display: "flex", justifyContent: "center" }}>
+      <main className={appStyle.main}>
         <BurgerIngredients ingredients={dataIngredients} />
         <BurgerConstructor ingredients={dataIngredients}/>
       </main>

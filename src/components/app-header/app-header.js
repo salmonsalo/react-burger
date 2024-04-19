@@ -11,7 +11,7 @@ export default function AppHeader() {
     <>
       <header style={{backgroundColor:"#1C1C21", height:"88px"}}>
         <nav className={headerStyle.nav}>
-          <div style={{ display: "flex" }}>
+          <div className={headerStyle.nav_conteynir}>
             <a href="/" className={headerStyle.link}>
             <div className="mr-2">
                 <BurgerIcon type="secondary"/>

@@ -1,7 +1,9 @@
 import done from "../../images/done.svg";
+import orderDetailsStyle from "./order-details.module.css";
+
 export default function OrderDetails() {
     return (
-        <div style={{display:"flex", flexDirection:"column", alignItems:"center", padding:"0 100px 100px 100px"}}>
+        <div className={orderDetailsStyle.content}>
             <h2 className="text text_type_digits-large mt-20 mb-8">034536</h2>
             <p className="text text_type_main-medium">идентификатор заказа</p>
             <img className="mt-15 mb-15" src={done} alt="идентификатор заказа" />
