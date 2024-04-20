@@ -1,21 +1,24 @@
+.header {
+  background-color: #1c1c21;
+  height: 88px;
+}
+
 .nav {
-    composes: pb-4 pt-4  from '@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+  composes: pb-4 pt-4 from "@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css";
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .nav_conteynir {
-    display: flex;
+  display: flex;
 }
 
 .link {
-    composes: pl-5 pr-5 pb-4 pt-4 from '@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css';
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-decoration: none;
-    cursor: pointer;
+  composes: pl-5 pr-5 pb-4 pt-4 from "@ya.praktikum/react-developer-burger-ui-components/dist/ui/box.css";
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
 }
-
-

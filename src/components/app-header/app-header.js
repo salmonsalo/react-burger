@@ -8,8 +8,7 @@ import {
 
 export default function AppHeader() {
   return (
-    <>
-      <header style={{backgroundColor:"#1C1C21", height:"88px"}}>
+      <header className={headerStyle.header}>
         <nav className={headerStyle.nav}>
           <div className={headerStyle.nav_conteynir}>
             <a href="/" className={headerStyle.link}>
@@ -40,6 +39,5 @@ export default function AppHeader() {
           </a>
         </nav>
       </header>
-    </>
   );
 }

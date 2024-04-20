@@ -1,4 +1,5 @@
 import ingredientsDetailsStyle from "./ingredient-details.module.css";
+import PropTypes from "prop-types";
 
 export default function IngredientDetails({
   img,
@@ -8,19 +9,24 @@ export default function IngredientDetails({
   fat,
   carbohydrates,
 }) {
+  IngredientDetails.propTypes = {
+    img: PropTypes.string,
+    name: PropTypes.string,
+    calories: PropTypes.number,
+    proteins: PropTypes.number,
+    fat: PropTypes.number,
+    carbohydrates: PropTypes.number,
+  };
+
   return (
-    <div
-      className={ingredientsDetailsStyle.content}
-    >
+    <div className={ingredientsDetailsStyle.content}>
       <img src={img} alt={name} />
       <p
         className={`${ingredientsDetailsStyle.name} text text_type_main-medium mt-4`}
       >
         {name}
       </p>
-      <div
-        className={`${ingredientsDetailsStyle.description} mt-8`}
-      >
+      <div className={`${ingredientsDetailsStyle.description} mt-8`}>
         <div className={ingredientsDetailsStyle.item}>
           <p className="text text_type_main-default text_color_inactive">
             Калории,ккал

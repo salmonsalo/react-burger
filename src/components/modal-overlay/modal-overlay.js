@@ -1,5 +1,6 @@
 import styleModalOverlay from "./modal-overlay.module.css";
 import { useRef } from "react";
+import PropTypes from "prop-types";
 
 export default function ModalOverlay({ children, onClose }) {
   const modalRef = useRef(null);
@@ -9,7 +10,12 @@ export default function ModalOverlay({ children, onClose }) {
       onClose();
     }
   };
-  
+
+  ModalOverlay.propTypes = {
+    children: PropTypes.node,
+    onClose: PropTypes.func,
+  };
+
   return (
     <div
       className={styleModalOverlay.overlay}
