@@ -5,9 +5,9 @@ import {
   Tab,
   Counter,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import PropTypes from "prop-types";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
+import { ingredientType } from "../../utils/types";
 
 export default function BurgerIngredients({ ingredients }) {
   const [current, setCurrent] = useState("one");
@@ -86,20 +86,7 @@ export default function BurgerIngredients({ ingredients }) {
   };
 
   BurgerIngredients.propTypes = {
-    ingredients: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string,
-        type: PropTypes.string,
-        name: PropTypes.string,
-        price: PropTypes.number,
-        images: PropTypes.string,
-        image_large: PropTypes.string,
-        calories:PropTypes.number,
-        proteins:PropTypes.number,
-        fat:PropTypes.number,
-        carbohydrates:PropTypes.number,
-      })
-    ).isRequired,
+    ingredients: ingredientType.isRequired,
   };
 
   return (

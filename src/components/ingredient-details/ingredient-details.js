@@ -10,12 +10,12 @@ export default function IngredientDetails({
   carbohydrates,
 }) {
   IngredientDetails.propTypes = {
-    img: PropTypes.string,
-    name: PropTypes.string,
-    calories: PropTypes.number,
-    proteins: PropTypes.number,
-    fat: PropTypes.number,
-    carbohydrates: PropTypes.number,
+    img: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    calories: PropTypes.number.isRequired,
+    proteins: PropTypes.number.isRequired,
+    fat: PropTypes.number.isRequired,
+    carbohydrates: PropTypes.number.isRequired,
   };
 
   return (
