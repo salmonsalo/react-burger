@@ -1,0 +1,20 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 100px 60px 100px;
+}
+
+.name {
+  text-align: center;
+  white-space: nowrap;
+}
+.description {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.item {
+  text-align: center;
+}

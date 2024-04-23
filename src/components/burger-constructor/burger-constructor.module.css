@@ -1,0 +1,51 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+  position: relative;
+  width: 600px;
+  height: 1000px;
+}
+
+.content_unlocked {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.content_unlocked::-webkit-scrollbar {
+  width: 12px;
+}
+
+.content_unlocked::-webkit-scrollbar-track {
+  background: #2f2f37;
+}
+.content_unlocked::-webkit-scrollbar-thumb {
+  background: #8585ad;
+  border: 3px solid #2f2f37;
+  border-radius: 6px;
+}
+
+.content_unlocked::-webkit-scrollbar-button {
+  display: none;
+}
+
+.element {
+  display: flex;
+  align-items: center;
+}
+
+.payment {
+  display: flex;
+  justify-content: end;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+}
