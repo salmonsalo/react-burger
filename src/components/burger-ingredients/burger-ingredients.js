@@ -14,8 +14,7 @@ import {
   closeModalIngredient,
   openModalIngredient,
 } from "../../services/burger-ingedients/ingredientModalSlice";
-import { ingredientType } from "../../utils/types";
-import PropTypes from "prop-types";
+import { boxType } from "../../utils/types";
 
 export default function BurgerIngredients() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -110,10 +109,6 @@ export default function BurgerIngredients() {
       }, 0);
     }
 
-    Box.propTypes = {
-      item: PropTypes.object,
-      onClick: PropTypes.func,
-    };
     const [{ isDragging }, dragRef] = useDrag(() => ({
       type: "ingredient",
       item,
@@ -124,7 +119,7 @@ export default function BurgerIngredients() {
     }));
 
     const opacity = isDragging ? 0.4 : 1;
-    
+
     return (
       <div ref={dragRef} style={{ opacity }} data-testid={`box`}>
         <div
@@ -150,6 +145,8 @@ export default function BurgerIngredients() {
       </div>
     );
   };
+
+  Box.propTypes = boxType.isRequired;
 
   const renderIngredientsTypes = useCallback(
     (types) => {
@@ -183,10 +180,6 @@ export default function BurgerIngredients() {
     },
     [ingredients, handleOpenIngredientModal]
   );
-
-  BurgerIngredients.propTypes = {
-    ingredients: ingredientType.isRequired,
-  };
 
   return (
     <section className={ingredientsStyle.container}>

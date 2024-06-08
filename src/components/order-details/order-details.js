@@ -1,12 +1,8 @@
 import done from "../../images/done.svg";
+import { orderDetailsType } from "../../utils/types";
 import orderDetailsStyle from "./order-details.module.css";
-import PropTypes from "prop-types";
 
 export default function OrderDetails({ order }) {
-  OrderDetails.propTypes = {
-    order: PropTypes.number,
-  };
-
   return (
     <div className={orderDetailsStyle.content}>
       <h2 className="text text_type_digits-large mt-20 mb-8">{order}</h2>
@@ -21,3 +17,5 @@ export default function OrderDetails({ order }) {
     </div>
   );
 }
+
+OrderDetails.propTypes = orderDetailsType.isRequired;
