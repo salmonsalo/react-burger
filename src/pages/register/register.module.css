@@ -1,0 +1,20 @@
+.content {
+    composes: content from "../login/login.module.css";
+  }
+  
+  .box {
+    composes: box from "../login/login.module.css";
+  }
+  
+  .h2 {
+    composes: h2 from "../login/login.module.css";
+  }
+  
+  .questions {
+    composes: questions from "../login/login.module.css";
+  }
+  
+  .link {
+    composes: link from "../login/login.module.css";
+  }
+  

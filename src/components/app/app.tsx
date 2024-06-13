@@ -1,39 +1,19 @@
-// import appStyle from "./app.module.css";
-// import AppHeader from "../app-header/app-header";
-// import { useGetIngredientsQuery } from "../../services/burger-ingedients/api";
-// import Home from "../../pages/home/home";
-
 import { Route, Routes } from "react-router-dom";
 import HomePage from "../../pages/home/home";
+import LoginPage from "../../pages/login/login";
+import RegisterPage from "../../pages/register/register";
+import ForgotPasswordPage from "../../pages/forgot-password/forgot-password";
+import ResetPasswordPage from "../../pages/reset-password/reset-password";
 
 function App() {
-  // const {
-  //   isLoading: loading,
-  //   error,
-  //   data: ingredients,
-  // } = useGetIngredientsQuery({});
-  // if (loading) {
-  //   return <h2>Загрузка...</h2>;
-  // }
-
-  // if (!loading && error) {
-  //   return <h2>{`Ошибка: ${error}`}</h2>;
-  // }
-
-  // if (!loading && ingredients.length === 0) {
-  //   return <h2>---</h2>;
-  // }
-
   return (
     <Routes>
       <Route path="/home" element={<HomePage />}/>
+      <Route path="/login" element={<LoginPage />}/>
+      <Route path="/register" element={<RegisterPage />}/>
+      <Route path="/forgot-password" element={<ForgotPasswordPage />}/>
+      <Route path="/reset-password" element={<ResetPasswordPage />}/>
     </Routes>
-    // <div className={appStyle.app}>
-    //   <AppHeader />
-    //   <main className={appStyle.main}>
-    //   <Home />
-    //   </main>
-    // </div>
   );
 }
 
