@@ -1,37 +1,34 @@
 import React, { useEffect, useState } from "react";
-import appStyle from "./app.module.css"
+import appStyle from "./app.module.css";
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-
-const api = "https://norma.nomoreparties.space/api/ingredients";
+import { useGetIngredientsQuery } from "../../services/burger-ingedients/api";
 
 function App() {
-  const [dataIngredients, setDataIngredients] = useState([]);
+  const {
+    isLoading: loading,
+    error,
+    data: ingredients,
+  } = useGetIngredientsQuery({});
+  if (loading) {
+    return <h2>Загрузка...</h2>;
+  }
 
-  const getIngredients = async () => {
-    try {
-      const res = await fetch(api);
-      if (!res.ok) {
-        throw new Error("Ошибка" + res.status);
-      }
-      const data = await res.json();
-      console.log(data.data)
-      setDataIngredients(data.data);
-    } catch (error) {
-      console.error("Ошибка", error);
-    }
-  };
-  useEffect(() => {
-    getIngredients();
-  }, [])
+  if (!loading && error) {
+    return <h2>{`Ошибка: ${error}`}</h2>;
+  }
+
+  if (!loading && ingredients.length === 0) {
+    return <h2>---</h2>;
+  }
 
   return (
     <div className={appStyle.app}>
       <AppHeader />
       <main className={appStyle.main}>
-        <BurgerIngredients ingredients={dataIngredients} />
-        <BurgerConstructor ingredients={dataIngredients}/>
+        <BurgerIngredients />
+        <BurgerConstructor />
       </main>
     </div>
   );

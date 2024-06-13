@@ -49,3 +49,27 @@
   display: flex;
   align-items: center;
 }
+
+.bun_top {
+  width: 536px;
+  height: 80px;
+  border-radius: 50px 50px 30px 30px;
+  text-align: center;
+}
+
+.bun_bottom {
+  width: 536px;
+  height: 80px;
+  border-radius:  30px 30px 50px 50px;
+  text-align: center;
+}
+
+.ingredients {
+  width: 536px;
+  height: 100%;
+  border-radius:  50px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
