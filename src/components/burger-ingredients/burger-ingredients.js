@@ -1,43 +1,24 @@
 import ingredientsStyle from "./burger-ingredients.module.css";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import {
   CurrencyIcon,
   Tab,
   Counter,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import Modal from "../modal/modal";
-import IngredientDetails from "../ingredient-details/ingredient-details";
 import { useGetIngredientsQuery } from "../../services/burger-ingedients/api";
 import { useDrag } from "react-dnd";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  closeModalIngredient,
-  openModalIngredient,
-} from "../../services/burger-ingedients/ingredientModalSlice";
+import { openModalIngredient } from "../../services/burger-ingedients/ingredientModalSlice";
 import { boxType } from "../../utils/types";
+import { Link, useLocation } from "react-router-dom";
 
 export default function BurgerIngredients() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const { data } = useGetIngredientsQuery();
-  const ingredients = data?.data ?? [];
+  const { data: ingredientsData } = useGetIngredientsQuery();
+  const ingredients = useMemo(
+    () => ingredientsData?.data ?? [],
+    [ingredientsData]
+  );
   const dispatch = useDispatch();
-  const ingredientModal = useSelector(
-    (state) => state.ingredientModalSlice.ingredientModal
-  );
-
-  const handleOpenIngredientModal = useCallback(
-    (ingredientId) => {
-      const ingredient = ingredients.find((i) => i._id === ingredientId);
-      dispatch(openModalIngredient(ingredient));
-      setIsModalOpen(true);
-    },
-    [ingredients, dispatch]
-  );
-
-  const handleCloseIngredientModal = useCallback(() => {
-    dispatch(closeModalIngredient());
-    setIsModalOpen(false);
-  }, [dispatch]);
 
   const [current, setCurrent] = useState("bun");
   const containerRef = useRef(null);
@@ -91,7 +72,13 @@ export default function BurgerIngredients() {
     };
   }, []);
 
-  const Box = function Box({ item, onClick }) {
+  const Box = function Box({ item }) {
+    const location = useLocation();
+    const ingredientId = item["_id"];
+    const handleClick = () => {
+      dispatch(openModalIngredient(item));
+    };
+
     const ingredient = useSelector(
       (state) => state.constructorSlice.ingredients
     );
@@ -121,28 +108,32 @@ export default function BurgerIngredients() {
     const opacity = isDragging ? 0.4 : 1;
 
     return (
-      <div ref={dragRef} style={{ opacity }} data-testid={`box`}>
-        <div
-          key={item._id}
-          className={ingredientsStyle.ingredient}
-          onClick={() => onClick(item._id)}
-        >
-          {quantity <= 0 ? null : <Counter count={quantity} />}
+      <Link
+        key={ingredientId}
+        to={`/ingredients/${ingredientId}`}
+        state={{ background: location }}
+        onClick={handleClick}
+        className={`${ingredientsStyle.link}`}
+      >
+        <div ref={dragRef} style={{ opacity }} data-testid={`box`}>
+          <div className={ingredientsStyle.ingredient}>
+            {quantity <= 0 ? null : <Counter count={quantity} />}
 
-          <img src={item.image} alt={item.name} />
-          <div className={`${ingredientsStyle.price} mt-1 mb-1`}>
-            <p className="text text_type_digits-default mr-2">{item.price}</p>
-            <CurrencyIcon type="primary" />
-          </div>
-          <div className={ingredientsStyle.name_container}>
-            <p
-              className={`${ingredientsStyle.name} text text_type_main-default`}
-            >
-              {item.name}
-            </p>
+            <img src={item.image} alt={item.name} />
+            <div className={`${ingredientsStyle.price} mt-1 mb-1`}>
+              <p className="text text_type_digits-default mr-2">{item.price}</p>
+              <CurrencyIcon type="primary" />
+            </div>
+            <div className={ingredientsStyle.name_container}>
+              <p
+                className={`${ingredientsStyle.name} text text_type_main-default`}
+              >
+                {item.name}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
     );
   };
 
@@ -159,26 +150,27 @@ export default function BurgerIngredients() {
         title = "Соусы";
       }
 
+      const filteredIngredients = ingredients.filter(
+        (ingredient) => ingredient.type === types
+      );
       return (
         <div>
           <h2 className="mb-6 text text_type_main-medium">{title}</h2>
           <div
             className={`${ingredientsStyle.ingredients} pt-6 pl-4 pr-4 pb-10`}
           >
-            {ingredients
-              .filter((ingredient) => ingredient.type === types)
-              .map((ingredient) => (
-                <Box
-                  key={ingredient._id}
-                  item={ingredient}
-                  onClick={handleOpenIngredientModal}
-                />
-              ))}
+            {filteredIngredients.map((ingredient) => (
+              <Box
+                key={ingredient._id}
+                item={ingredient}
+                onClick={() => handleClick(ingredient._id)}
+              />
+            ))}
           </div>
         </div>
       );
     },
-    [ingredients, handleOpenIngredientModal]
+    [ingredients]
   );
 
   return (
@@ -213,22 +205,6 @@ export default function BurgerIngredients() {
         <div ref={sectionsRefs.bun}>{renderIngredientsTypes("bun")}</div>
         <div ref={sectionsRefs.main}>{renderIngredientsTypes("main")}</div>
         <div ref={sectionsRefs.sauce}>{renderIngredientsTypes("sauce")}</div>
-
-        {isModalOpen && ingredientModal && (
-          <Modal
-            title="Детали ингредиента"
-            onClose={handleCloseIngredientModal}
-          >
-            <IngredientDetails
-              img={ingredientModal?.image_large}
-              name={ingredientModal?.name}
-              calories={ingredientModal?.calories}
-              proteins={ingredientModal?.proteins}
-              fat={ingredientModal?.fat}
-              carbohydrates={ingredientModal?.carbohydrates}
-            />
-          </Modal>
-        )}
       </div>
     </section>
   );

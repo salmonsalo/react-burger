@@ -12,7 +12,7 @@ const ingredientModalSlice = createSlice({
             state.ingredientModal = action.payload;
         },
         closeModalIngredient : (state) => {
-            state.ingredientModal = null
+            state.ingredientModal = null;
         }
     }
 })

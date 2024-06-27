@@ -22,13 +22,10 @@ function HomePage() {
     return <h2>---</h2>;
   }
   return (
-    <div className={homeStyle.app}>
-      <AppHeader />
       <main className={homeStyle.main}>
         <BurgerIngredients />
         <BurgerConstructor />
       </main>
-    </div>
   );
 }
 

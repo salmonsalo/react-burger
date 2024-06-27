@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 
 export const ingredientDetailsType = PropTypes.shape({
-  img: PropTypes.string.isRequired,
+  image_large: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   calories: PropTypes.number.isRequired,
   proteins: PropTypes.number.isRequired,

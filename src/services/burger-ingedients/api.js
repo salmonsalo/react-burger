@@ -19,14 +19,7 @@ export const ingredientsApi = createApi({
         body: JSON.stringify(orderData),
       })
     })
-    // addIngredientToConstructor: builder.mutation({
-    //   query: ingredient => ({
-    //     url: '/ingredient',
-    //     method: 'POST',
-    //     body:  ingredient,
-    //   })
-    // })
   }),
 });
 
-export const { useGetIngredientsQuery, useCreateOrderMutation } = ingredientsApi;
+export const { useGetIngredientsQuery, useCreateOrderMutation, useLazyGetIngredientsIdQuery } = ingredientsApi;

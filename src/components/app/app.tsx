@@ -1,19 +1,48 @@
-import { Route, Routes } from "react-router-dom";
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import HomePage from "../../pages/home/home";
-import LoginPage from "../../pages/login/login";
-import RegisterPage from "../../pages/register/register";
-import ForgotPasswordPage from "../../pages/forgot-password/forgot-password";
-import ResetPasswordPage from "../../pages/reset-password/reset-password";
+import IngredientPage from "../ingredient-page/ingredient-page";
+import AppHeader from "../app-header/app-header";
+import appStyle from "./app.module.css";
+import Modal from "../modal/modal";
 
 function App() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const background = location.state && location.state.background;
+
+  const handleModalClose = () => {
+    navigate(-1);
+  };
+
   return (
-    <Routes>
-      <Route path="/home" element={<HomePage />}/>
-      <Route path="/login" element={<LoginPage />}/>
-      <Route path="/register" element={<RegisterPage />}/>
-      <Route path="/forgot-password" element={<ForgotPasswordPage />}/>
-      <Route path="/reset-password" element={<ResetPasswordPage />}/>
-    </Routes>
+    <div className={appStyle.app}>
+      <AppHeader />
+      <Routes location={background || location}>
+        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/ingredients/:ingredientId"
+          element={<IngredientPage/>}
+        />
+      </Routes>
+
+      {background && (
+        <Routes>
+          <Route
+            path="/ingredients/:ingredientId"
+            element={
+              <Modal title="Детали ингредиента" onClose={handleModalClose}>
+                <IngredientPage/>
+              </Modal>
+            }
+          />
+        </Routes>
+      )}
+    </div>
   );
 }
 
