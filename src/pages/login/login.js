@@ -4,44 +4,38 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginStyle from "./login.module.css";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "../../components/auth-provider/auth-provider";
+import { useFormAndValidation } from "../../hooks/use-form-and-validation";
 
 const initialState = {
   email: "",
   password: "",
 };
 function LoginPage() {
-  const [formValue, setFormValue] = useState(initialState);
-  const { email, password } = formValue;
-  const [formErrors, setFormErrors] = useState({
-    email: false,
-    password: false,
-  });
+  const { values, handleChange, errors, isValid, setValues, resetForm } =
+    useFormAndValidation(initialState);
   const navigate = useNavigate();
   const location = useLocation();
   const { login, isAuthenticated, setVisitedForgotPassword } = useAuth();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormValue((prevValue) => ({
-      ...prevValue,
-      [name]: value,
-    }));
-  };
-
   const handleLogin = async (event) => {
     event.preventDefault();
+    const { email, password } = values;
 
     if (!email || !password) {
-      setFormErrors({ email: !email, password: !password });
       alert("Пожалуйста, заполните все поля");
+      setValues((prevValues) => ({
+        ...prevValues,
+        email: !email ? "" : prevValues.email,
+        password: !password ? "" : prevValues.password,
+      }));
     } else {
-      setFormErrors({ email: false, password: false });
       try {
         await login(email, password);
         const from = location.state?.from?.pathname || "/";
         navigate(from, { replace: true });
+        resetForm();
       } catch (error) {
         console.error("Ошибка входа:", error);
       }
@@ -66,31 +60,33 @@ function LoginPage() {
           <Input
             type={"email"}
             placeholder={"E-mail"}
-            value={email}
+            value={values.email || ""}
             name={"email"}
-            error={formErrors.email}
+            error={Boolean(errors.email)}
             errorText={"Введите корректный E-mail"}
             size={"default"}
             extraClass="mb-6"
-            onChange={handleInputChange}
+            onChange={handleChange}
           />
           <Input
             type={"password"}
             placeholder={"Пароль"}
-            value={password}
+            value={values.password || ""}
             name={"password"}
-            error={formErrors.password}
+            error={Boolean(errors.password)}
             errorText={"Введите корректный пароль"}
             size={"default"}
             icon={"ShowIcon"}
             extraClass="mb-6"
-            onChange={handleInputChange}
+            onChange={handleChange}
           />
-          <Button htmlType="submit">Войти</Button>
+          <Button htmlType="submit" disabled={!isValid}>
+            Войти
+          </Button>
         </form>
         <div className={`${loginStyle.questions} mt-20`}>
           <p className="text text_type_main-default text_color_inactive mb-4">
-            Вы — новый пользователь?
+            Вы — новый пользователь?{" "}
             <Link to="/register" className={loginStyle.link}>
               Зарегистрироваться
             </Link>

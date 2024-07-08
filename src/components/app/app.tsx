@@ -1,6 +1,6 @@
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import HomePage from "../../pages/home/home";
-import IngredientPage from "../ingredient-page/ingredient-page";
+import IngredientPage from "../../pages/ingredient-page/ingredient-page";
 import AppHeader from "../app-header/app-header";
 import appStyle from "./app.module.css";
 import Modal from "../modal/modal";

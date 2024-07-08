@@ -56,7 +56,7 @@ function ForgotPasswordPage() {
        
         <div className={`${forgotPasswordStyle.questions} mt-20`}>
           <p className="text text_type_main-default text_color_inactive mb-4">
-            Вспомнили пароль?
+            Вспомнили пароль?{" "}
             <Link to="/login" className={forgotPasswordStyle.link}>
               Войти
             </Link>

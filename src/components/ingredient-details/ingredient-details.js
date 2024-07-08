@@ -55,4 +55,4 @@ export default function IngredientDetails({
   );
 }
 
-IngredientDetails.propTypes = ingredientDetailsType;
+IngredientDetails.propTypes = ingredientDetailsType.isRequired;

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import IngredientDetails from "../ingredient-details/ingredient-details";
+import IngredientDetails from "../../components/ingredient-details/ingredient-details";
 import { useGetIngredientsQuery } from "../../services/burger-ingedients/api";
 import { useMemo } from "react";
 

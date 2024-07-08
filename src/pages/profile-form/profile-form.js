@@ -4,50 +4,58 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useEffect, useState } from "react";
 import { useFetchUserQuery, useUpdateUserMutation } from "../../utils/api";
+import { useFormAndValidation } from "../../hooks/use-form-and-validation";
 
 export default function ProfileForm() {
   const { data: userData, error, isLoading } = useFetchUserQuery();
   const [updateUser] = useUpdateUserMutation();
-  const [formValues, setFormValues] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-  const [originalValues, setOriginalValues] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
   const [isEditing, setIsEditing] = useState(false);
+  const { values, handleChange, resetForm, setIsValid } =
+    useFormAndValidation();
 
   useEffect(() => {
     if (userData && userData.success) {
       const { user } = userData;
-      setFormValues({ name: user.name || '', email: user.email || '', password: '' });
-      setOriginalValues({ name: user.name || '', email: user.email || '', password: '' });
+      const initialValues = {
+        name: user.name || "",
+        email: user.email || "",
+        password: "",
+      };
+      resetForm(initialValues, {}, true);
+      setIsValid(true);
     }
-  }, [userData]);
+  }, [userData, resetForm, setIsValid]);
 
-
+  const handleInputChange = (event) => {
+    handleChange(event);
+    if (!isEditing) {
+      setIsEditing(true);
+    }
+  };
   const handleSave = async () => {
     try {
-      await updateUser(formValues).unwrap();
-      setOriginalValues(formValues);
+      await updateUser(values).unwrap();
       setIsEditing(false);
     } catch (err) {
       console.error("Ошибка обновления данных пользователя:", err);
+      setIsValid(false);
     }
   };
 
   const handleCancel = () => {
-    setFormValues(originalValues);
+    if (userData && userData.success) {
+      const { user } = userData;
+      resetForm(
+        {
+          name: user.name || "",
+          email: user.email || "",
+          password: "",
+        },
+        {},
+        true
+      );
+    }
     setIsEditing(false);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues((prevState) => ({ ...prevState, [name]: value }));
-    setIsEditing(true);
   };
 
   if (isLoading) return <div>Загрузка...</div>;
@@ -60,8 +68,8 @@ export default function ProfileForm() {
           type={"text"}
           placeholder={"Имя"}
           name={"name"}
-          value={formValues.name}
-          onChange={handleChange}
+          value={values.name || ""}
+          onChange={handleInputChange}
           error={false}
           errorText={"Ошибка"}
           size={"default"}
@@ -72,8 +80,8 @@ export default function ProfileForm() {
           type={"email"}
           placeholder={"Логин"}
           name={"email"}
-          value={formValues.email}
-          onChange={handleChange}
+          value={values.email || ""}
+          onChange={handleInputChange}
           error={false}
           errorText={"Ошибка"}
           size={"default"}
@@ -84,13 +92,13 @@ export default function ProfileForm() {
           type={"password"}
           placeholder={"Пароль"}
           name={"password"}
-          value={formValues.password}
+          value={values.password || ""}
           error={false}
           errorText={"Ошибка"}
           size={"default"}
           icon={"EditIcon"}
           extraClass="mb-6"
-          onChange={handleChange}
+          onChange={handleInputChange}
         />
         {isEditing && (
           <div>

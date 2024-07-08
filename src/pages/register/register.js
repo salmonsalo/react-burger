@@ -5,18 +5,14 @@ import {
 import registerStyle from "./register.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useRegisterUserMutation } from "../../utils/api";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useFormAndValidation } from "../../hooks/use-form-and-validation";
 
 const initialState = { name: "", email: "", password: "" };
 
 function RegisterPage() {
-  const [formValue, setFormValue] = useState(initialState);
-  const { name, email, password } = formValue;
-  const [formErrors, setFormErrors] = useState({
-    email: false,
-    password: false,
-    name: false,
-  });
+  const { values, handleChange, errors, resetForm } =
+    useFormAndValidation(initialState);
   const [
     registerUser,
     {
@@ -27,42 +23,32 @@ function RegisterPage() {
   ] = useRegisterUserMutation();
   const navigate = useNavigate();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormValue((prevValue) => ({
-      ...prevValue,
-      [name]: value,
-    }));
-  };
+  useEffect(() => {
+    resetForm(initialState, {}, false);
+  }, [resetForm]);
 
   const handleRegister = async (event) => {
     event.preventDefault();
-    if (!email || !password || !name) {
-      setFormErrors({
-        email: !email,
-        password: !password,
-      });
+    const { name, email, password } = values;
+
+    if (!name || !email || !password) {
       alert("Пожалуйста, заполните все поля");
     } else {
-      setFormErrors({
-        name: false,
-        email: false,
-        password: false,
-      });
       await registerUser({ name, email, password });
     }
   };
 
   useEffect(() => {
     if (isRegisterSuccess) {
-      setFormValue(initialState);
+      resetForm(initialState);
       navigate("/login");
     } else if (isRegisterError) {
       alert(
         `Ошибка регистрации: ${registerError?.message || "Неизвестная ошибка"}`
       );
     }
-  }, [isRegisterSuccess, isRegisterError, navigate, registerError]);
+  }, [isRegisterSuccess, isRegisterError, navigate, resetForm, registerError]);
+
   return (
     <div className={registerStyle.content}>
       <div className={registerStyle.box}>
@@ -75,35 +61,35 @@ function RegisterPage() {
             type={"text"}
             placeholder={"Имя"}
             name={"name"}
-            value={name}
-            error={false}
+            value={values.name || ""}
+            error={!!errors.name}
             errorText={"Ошибка"}
             size={"default"}
             extraClass="mb-6"
-            onChange={handleInputChange}
+            onChange={handleChange}
           />
           <Input
             type={"email"}
             placeholder={"E-mail"}
-            value={email}
+            value={values.email || ""}
             name={"email"}
-            error={false}
+            error={!!errors.email}
             errorText={"Ошибка"}
             size={"default"}
             extraClass="mb-6"
-            onChange={handleInputChange}
+            onChange={handleChange}
           />
           <Input
             type={"password"}
             placeholder={"Пароль"}
-            value={password}
+            value={values.password || ""}
             name={"password"}
-            error={false}
+            error={!!errors.password}
             errorText={"Ошибка"}
             size={"default"}
             icon={"ShowIcon"}
             extraClass="mb-6"
-            onChange={handleInputChange}
+            onChange={handleChange}
           />
           <Button htmlType="submit">Зарегестрироваться</Button>
         </form>

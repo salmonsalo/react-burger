@@ -1,42 +1,53 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { baseUrl } from "../services/burger-ingedients/api";
 
-const baseUrl = "https://norma.nomoreparties.space/api";
 const baseQuery = fetchBaseQuery({
   baseUrl: baseUrl,
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("accessToken");
-    if (token && !headers.has('Authorization')) {
+    if (token && !headers.has("Authorization")) {
       headers.set("Authorization", `${token}`);
     }
     return headers;
   },
 });
 
-const refreshAuthToken = async () => {
+function checkResponse(res) {
+  if (!res.ok) {
+    return res.json().then((errorData) => {
+      throw new Error(errorData.message || "Произошла ошибка");
+    });
+  }
+  return res.json();
+}
+
+function request(url, options) {
+  return fetch(url, options)
+    .then(checkResponse)
+    .catch((error) => {
+      console.error(error.message);
+      throw error;
+    });
+}
+const refreshAuthToken = () => {
   const refreshToken = localStorage.getItem("refreshToken");
   if (!refreshToken) {
-    return null;
+    return Promise.resolve(null);
   }
-  try {
-    const response = await fetch(`${baseUrl}/auth/token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
+  return request(`${baseUrl}/auth/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refreshToken }),
+  })
+    .then((data) => {
+      localStorage.setItem("accessToken", data.accessToken);
+      return data.accessToken;
+    })
+    .catch((error) => {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      return null;
     });
-
-    if (!response.ok) {
-      throw new Error("Не удалось обновить токен");
-    }
-
-    const data = await response.json();
-    localStorage.setItem("accessToken", data.accessToken);
-    return data.accessToken;
-  } catch (error) {
-    console.error(error);
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    return null;
-  }
 };
 
 const baseQueryWithReauth = async (args, api, extraOptions) => {
@@ -63,41 +74,23 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 };
 
 export const requestPasswordReset = (email) => {
-  return fetch(`${baseUrl}/password-reset`, {
+  return request(`${baseUrl}/password-reset`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
   })
-    .then((response) => {
-      if (response.ok) {
-        return true;
-      } else {
-        throw new Error("Не удалось запросить сброс пароля");
-      }
-    })
-    .catch((error) => {
-      console.error("Ошибка сброса пароля:", error);
-      return false;
-    });
+    .then(() => true)
+    .catch(() => false);
 };
 
 export const resetPassword = (token, password) => {
-  return fetch(`${baseUrl}/password-reset/reset`, {
+  return request(`${baseUrl}/password-reset/reset`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ token, password }),
   })
-    .then((response) => {
-      if (response.ok) {
-        return true;
-      } else {
-        throw new Error("Не удалось сбросить пароль");
-      }
-    })
-    .catch((error) => {
-      console.error("Ошибка сброса пароля:", error);
-      return false;
-    });
+    .then(() => true)
+    .catch(() => false);
 };
 
 export const apiServise = createApi({

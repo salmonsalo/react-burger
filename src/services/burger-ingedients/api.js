@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+export const baseUrl = "https://norma.nomoreparties.space/api";
+
 export const ingredientsApi = createApi({
   reducerPath: "ingredientsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://norma.nomoreparties.space/api/",
+    baseUrl: baseUrl,
   }),
   endpoints: (builder) => ({
     getIngredients: builder.query({
