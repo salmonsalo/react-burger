@@ -43,7 +43,7 @@ const refreshAuthToken = () => {
       localStorage.setItem("accessToken", data.accessToken);
       return data.accessToken;
     })
-    .catch((error) => {
+    .catch(() => {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       return null;
