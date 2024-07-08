@@ -18,7 +18,7 @@ root.render(
     <Provider store={store}>
       <DndProvider backend={HTML5Backend}>
         <BrowserRouter>
-        <App />
+            <App />
         </BrowserRouter>
       </DndProvider>
     </Provider>

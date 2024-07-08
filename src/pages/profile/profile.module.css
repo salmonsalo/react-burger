@@ -1,0 +1,36 @@
+.box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.h2 {
+  composes: h2 from "../login/login.module.css";
+}
+
+.form {
+  composes: form from "../login/login.module.css";
+}
+
+.questions {
+  display: flex;
+  flex-direction: column;
+}
+
+.link {
+  text-decoration: none;
+  color: white;
+  padding: 16px 40px;
+}
+.link_inactive {
+  text-decoration: none;
+  padding: 16px 40px;
+}
+
+.button {
+  text-align: left;
+}
+
+.info {
+  width: 320px;
+}

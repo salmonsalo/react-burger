@@ -33,3 +33,10 @@ export const dustbinType = PropTypes.shape({
   text: PropTypes.string,
   className: PropTypes.object,
 });
+
+export const protectedRouteElement = PropTypes.shape({
+  restrictMode: PropTypes.bool,
+  redirectPath: PropTypes.string,
+  restrictedPaths: PropTypes.arrayOf(PropTypes.string),
+  children: PropTypes.node,
+});

@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import headerStyle from "./app-header.module.css";
 import {
   BurgerIcon,
@@ -29,14 +30,14 @@ export default function AppHeader() {
             </a>
           </div>
           <Logo />
-          <a href="/" className={headerStyle.link}>
+          <NavLink to="/profile" className={headerStyle.link} >
             <div className="mr-2">
               <ProfileIcon type="secondary"/>
             </div>
             <p className="text text_type_main-default text_color_inactive">
               Личный кабинет
             </p>
-          </a>
+          </NavLink>
         </nav>
       </header>
   );
