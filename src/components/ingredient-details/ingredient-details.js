@@ -2,7 +2,7 @@ import { ingredientDetailsType } from "../../utils/types";
 import ingredientsDetailsStyle from "./ingredient-details.module.css";
 
 export default function IngredientDetails({
-  img,
+  image_large,
   name,
   calories,
   proteins,
@@ -11,7 +11,7 @@ export default function IngredientDetails({
 }) {
   return (
     <div className={ingredientsDetailsStyle.content}>
-      <img src={img} alt={name} />
+      <img src={image_large} alt={name} />
       <p
         className={`${ingredientsDetailsStyle.name} text text_type_main-medium mt-4`}
       >
@@ -55,4 +55,4 @@ export default function IngredientDetails({
   );
 }
 
-IngredientDetails.propTypes = ingredientDetailsType;
+IngredientDetails.propTypes = ingredientDetailsType.isRequired;

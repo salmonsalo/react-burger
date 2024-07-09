@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import headerStyle from "./app-header.module.css";
 import {
   BurgerIcon,
@@ -8,36 +9,38 @@ import {
 
 export default function AppHeader() {
   return (
-      <header className={headerStyle.header}>
-        <nav className={headerStyle.nav}>
-          <div className={headerStyle.nav_conteynir}>
-            <a href="/" className={headerStyle.link}>
+    <header className={headerStyle.header}>
+      <nav className={headerStyle.nav}>
+        <div className={headerStyle.nav_conteynir}>
+          <NavLink to="/" className={headerStyle.link}>
             <div className="mr-2">
-                <BurgerIcon type="secondary"/>
-              </div>
-              <p className="text text_type_main-default text_color_inactive">
-                Конструктор
-              </p>
-            </a>
-            <a href="/" className={headerStyle.link}>
-              <div className="mr-2">
-                <ListIcon type="secondary"/>
-              </div>
-              <p className="text text_type_main-default text_color_inactive">
-                Лента заказов
-              </p>
-            </a>
-          </div>
-          <Logo />
-          <a href="/" className={headerStyle.link}>
-            <div className="mr-2">
-              <ProfileIcon type="secondary"/>
+              <BurgerIcon type="secondary" />
             </div>
             <p className="text text_type_main-default text_color_inactive">
-              Личный кабинет
+              Конструктор
             </p>
-          </a>
-        </nav>
-      </header>
+          </NavLink>
+          <NavLink to="/" className={headerStyle.link}>
+            <div className="mr-2">
+              <ListIcon type="secondary" />
+            </div>
+            <p className="text text_type_main-default text_color_inactive">
+              Лента заказов
+            </p>
+          </NavLink>
+        </div>
+        <NavLink to="/">
+          <Logo />
+        </NavLink>
+        <NavLink to="/profile" className={headerStyle.link}>
+          <div className="mr-2">
+            <ProfileIcon type="secondary" />
+          </div>
+          <p className="text text_type_main-default text_color_inactive">
+            Личный кабинет
+          </p>
+        </NavLink>
+      </nav>
+    </header>
   );
 }

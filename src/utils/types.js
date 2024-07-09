@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 
 export const ingredientDetailsType = PropTypes.shape({
-  img: PropTypes.string.isRequired,
+  image_large: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   calories: PropTypes.number.isRequired,
   proteins: PropTypes.number.isRequired,
@@ -32,4 +32,11 @@ export const dustbinType = PropTypes.shape({
   type: PropTypes.string,
   text: PropTypes.string,
   className: PropTypes.object,
+});
+
+export const protectedRouteElement = PropTypes.shape({
+  restrictMode: PropTypes.bool,
+  redirectPath: PropTypes.string,
+  restrictedPaths: PropTypes.arrayOf(PropTypes.string),
+  children: PropTypes.node,
 });

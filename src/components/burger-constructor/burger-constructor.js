@@ -20,11 +20,17 @@ import {
 } from "../../services/burger-constructor/constructorSlice";
 import { v4 as uuidv4 } from "uuid";
 import { dustbinType, sortableIngredientType } from "../../utils/types";
+import { useAuth } from "../auth-provider/auth-provider";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function BurgerConstructor() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoadingOverride, setIsLoadingOverride] = useState(false);
   const dispatch = useDispatch();
   const [createOrder, { isLoading }] = useCreateOrderMutation();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -210,6 +216,10 @@ export default function BurgerConstructor() {
 
   const [orderNumber, setOrderNumber] = useState(null);
   const handleOrder = () => {
+    if (!isAuthenticated) {
+      navigate("/login", { state: { from: location } });
+      return;
+    }
     if (!bun) {
       alert("Пожалуйста, добавьте булочку в конструктор");
       return;
@@ -226,16 +236,22 @@ export default function BurgerConstructor() {
     }
 
     const orderData = { ingredients: [bunId, ...ingredientIds, bunId] };
+    setIsLoadingOverride(true);
+    openModal();
 
     createOrder(orderData)
       .unwrap()
       .then((data) => {
         const orderNumber = data.order.number;
         setOrderNumber(orderNumber);
-        openModal();
       })
       .catch((error) => {
         console.error("Не удалось создать заказ:", error);
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setIsLoadingOverride(false);
+        }, 15000);
       });
   };
 
@@ -244,6 +260,14 @@ export default function BurgerConstructor() {
     dispatch(clearCart());
   };
 
+  const Preloader = () => {
+    return (
+      <div className={constuctorStyle.spinner}>
+        <div className={constuctorStyle.loader}></div>
+        <p>Загрузка...</p>
+      </div>
+    );
+  };
   return (
     <section className="ml-10">
       <div className="pt-25">
@@ -292,7 +316,11 @@ export default function BurgerConstructor() {
               </Button>
               {isModalOpen && (
                 <Modal onClose={handleClose}>
-                  <OrderDetails order={orderNumber} />
+                  {isLoading || isLoadingOverride ? (
+                    <Preloader />
+                  ) : (
+                    <OrderDetails order={orderNumber} />
+                  )}
                 </Modal>
               )}
             </div>

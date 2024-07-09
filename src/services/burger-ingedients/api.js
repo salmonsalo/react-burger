@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
+export const baseUrl = "https://norma.nomoreparties.space/api";
+
 export const ingredientsApi = createApi({
   reducerPath: "ingredientsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://norma.nomoreparties.space/api/",
+    baseUrl: baseUrl,
   }),
   endpoints: (builder) => ({
     getIngredients: builder.query({
@@ -19,14 +21,7 @@ export const ingredientsApi = createApi({
         body: JSON.stringify(orderData),
       })
     })
-    // addIngredientToConstructor: builder.mutation({
-    //   query: ingredient => ({
-    //     url: '/ingredient',
-    //     method: 'POST',
-    //     body:  ingredient,
-    //   })
-    // })
   }),
 });
 
-export const { useGetIngredientsQuery, useCreateOrderMutation } = ingredientsApi;
+export const { useGetIngredientsQuery, useCreateOrderMutation, useLazyGetIngredientsIdQuery } = ingredientsApi;
