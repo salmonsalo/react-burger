@@ -4,7 +4,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginStyle from "./login.module.css";
-import { useEffect } from "react";
+import { FormEvent, useEffect } from "react";
 import { useAuth } from "../../components/auth-provider/auth-provider";
 import { useFormAndValidation } from "../../hooks/use-form-and-validation";
 
@@ -19,7 +19,7 @@ function LoginPage() {
   const location = useLocation();
   const { login, isAuthenticated, setVisitedForgotPassword } = useAuth();
 
-  const handleLogin = async (event) => {
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const { email, password } = values;
 
@@ -66,8 +66,7 @@ function LoginPage() {
             errorText={"Введите корректный E-mail"}
             size={"default"}
             extraClass="mb-6"
-            onChange={handleChange}
-          />
+            onChange={handleChange} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
           <Input
             type={"password"}
             placeholder={"Пароль"}
@@ -78,8 +77,7 @@ function LoginPage() {
             size={"default"}
             icon={"ShowIcon"}
             extraClass="mb-6"
-            onChange={handleChange}
-          />
+            onChange={handleChange} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
           <Button htmlType="submit" disabled={!isValid}>
             Войти
           </Button>

@@ -6,9 +6,10 @@ import { useMemo } from "react";
 export default function IngredientPage() {
   const { ingredientId } = useParams();
   const { data: ingredientsData } = useGetIngredientsQuery();
-  const ingredients = useMemo(() => ingredientsData?.data ?? [], [ingredientsData]);
-  const ingredient = ingredients.find((item) => item._id === ingredientId);
-
+  const ingredient = useMemo(
+    () => ingredientsData?.data.find((item) => item._id === ingredientId),
+    [ingredientsData, ingredientId]
+  );
   return ingredient ? (
     <IngredientDetails
       image_large={ingredient.image_large}

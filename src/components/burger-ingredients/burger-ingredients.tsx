@@ -1,5 +1,11 @@
 import ingredientsStyle from "./burger-ingredients.module.css";
-import { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from "react";
 import {
   CurrencyIcon,
   Tab,
@@ -11,24 +17,36 @@ import { useDispatch, useSelector } from "react-redux";
 import { openModalIngredient } from "../../services/burger-ingedients/ingredientModalSlice";
 import { boxType } from "../../utils/types";
 import { Link, useLocation } from "react-router-dom";
+import { IIngredient } from "../../services/burger-ingedients/api";
+import { RootState } from "../../services/store";
+
+interface ISectionRefs {
+  bun: React.MutableRefObject<HTMLDivElement | null>;
+  main: React.MutableRefObject<HTMLDivElement | null>;
+  sauce: React.MutableRefObject<HTMLDivElement | null>;
+}
+type TItem = Pick<IIngredient, "_id" | "type" | "name" | "price" | "image">;
+type TIngredientType = "bun" | "main" | "sauce";
+
+interface IBoxProps {
+  item: TItem;
+  onClick: () => void;
+}
 
 export default function BurgerIngredients() {
   const { data: ingredientsData } = useGetIngredientsQuery();
-  const ingredients = useMemo(
-    () => ingredientsData?.data ?? [],
-    [ingredientsData]
-  );
+  const ingredients = useMemo(() => ingredientsData?.data ?? [], [ingredientsData]);
+ 
   const dispatch = useDispatch();
-
-  const [current, setCurrent] = useState("bun");
-  const containerRef = useRef(null);
-  const sectionsRefs = {
-    bun: useRef(null),
-    main: useRef(null),
-    sauce: useRef(null),
+  const [current, setCurrent] = useState<keyof ISectionRefs>("bun");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sectionsRefs: ISectionRefs = {
+    bun: useRef<HTMLDivElement | null>(null),
+    main: useRef<HTMLDivElement | null>(null),
+    sauce: useRef<HTMLDivElement | null>(null),
   };
 
-  const handleClick = (section) => {
+  const handleClick = (section: keyof ISectionRefs) => {
     const sectionRef = sectionsRefs[section].current;
 
     if (sectionRef) {
@@ -42,9 +60,9 @@ export default function BurgerIngredients() {
     if (!containerRef.current) return;
 
     const containerTop = containerRef.current.getBoundingClientRect().top;
-    const distances = {};
+    const distances: { [key in keyof ISectionRefs]?: number } = {};
 
-    Object.keys(sectionsRefs).forEach((key) => {
+    (Object.keys(sectionsRefs) as Array<keyof ISectionRefs>).forEach((key) => {
       const section = sectionsRefs[key].current;
       if (section) {
         const rect = section.getBoundingClientRect();
@@ -52,8 +70,10 @@ export default function BurgerIngredients() {
       }
     });
 
-    const closest = Object.keys(distances).reduce((a, b) =>
-      distances[a] < distances[b] ? a : b
+    const closest = (
+      Object.keys(distances) as Array<keyof ISectionRefs>
+    ).reduce((a, b) =>
+      (distances[a] as number) < (distances[b] as number) ? a : b
     );
     setCurrent(closest);
   };
@@ -72,7 +92,7 @@ export default function BurgerIngredients() {
     };
   }, []);
 
-  const Box = function Box({ item }) {
+  const Box = function Box({ item }: IBoxProps) {
     const location = useLocation();
     const ingredientId = item["_id"];
     const handleClick = () => {
@@ -80,9 +100,11 @@ export default function BurgerIngredients() {
     };
 
     const ingredient = useSelector(
-      (state) => state.constructorSlice.ingredients
+      (state: RootState) => state.constructorSlice.ingredients as IIngredient[]
     );
-    const bun = useSelector((state) => state.constructorSlice.bun);
+    const bun = useSelector(
+      (state: RootState) => state.constructorSlice.bun as IIngredient | null
+    );
 
     let quantity = 0;
     if (item.type === "bun") {
@@ -140,7 +162,7 @@ export default function BurgerIngredients() {
   Box.propTypes = boxType.isRequired;
 
   const renderIngredientsTypes = useCallback(
-    (types) => {
+    (types: TIngredientType) => {
       let title = "";
       if (types === "bun") {
         title = "Булки";
@@ -163,7 +185,7 @@ export default function BurgerIngredients() {
               <Box
                 key={ingredient._id}
                 item={ingredient}
-                onClick={() => handleClick(ingredient._id)}
+                onClick={() => handleClick(types)}
               />
             ))}
           </div>

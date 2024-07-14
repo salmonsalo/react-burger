@@ -1,6 +1,14 @@
 import { ingredientDetailsType } from "../../utils/types";
 import ingredientsDetailsStyle from "./ingredient-details.module.css";
 
+interface IIngredientDetails {
+  image_large: string;
+  name: string;
+  calories: number;
+  proteins: number;
+  fat: number;
+  carbohydrates: number;
+}
 export default function IngredientDetails({
   image_large,
   name,
@@ -8,7 +16,7 @@ export default function IngredientDetails({
   proteins,
   fat,
   carbohydrates,
-}) {
+}: IIngredientDetails) {
   return (
     <div className={ingredientsDetailsStyle.content}>
       <img src={image_large} alt={name} />

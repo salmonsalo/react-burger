@@ -5,10 +5,13 @@ import {
   CurrencyIcon,
   DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo, FC } from "react";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
-import { useCreateOrderMutation } from "../../services/burger-ingedients/api";
+import {
+  IIngredient,
+  useCreateOrderMutation,
+} from "../../services/burger-ingedients/api";
 import { useDrop, useDrag } from "react-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -19,9 +22,41 @@ import {
   clearCart,
 } from "../../services/burger-constructor/constructorSlice";
 import { v4 as uuidv4 } from "uuid";
-import { dustbinType, sortableIngredientType } from "../../utils/types";
 import { useAuth } from "../auth-provider/auth-provider";
 import { useLocation, useNavigate } from "react-router-dom";
+import { IIngredientWithOriginalId } from "../../services/burger-constructor/constructorSlice";
+
+interface DragItem {
+  ingredientId: string;
+}
+
+interface Props {
+  ingredient: IIngredient;
+  moveIngredient: (fromId: string, toId: string) => void;
+  handleRemove: (_id: string) => void;
+  onDropEnd: () => void;
+  ingredientId: string;
+}
+interface DustbinProps {
+  accept: string[];
+  type?: "top" | "bottom" | "default";
+  text?: string;
+  className?: string;
+  items?: IIngredient[];
+  label?: string;
+}
+
+interface ConstructorSliceState {
+  ingredients: IIngredient[];
+  bun: IIngredient | null;
+}
+interface ICreateOrderRequest {
+  ingredients: { _id: string }[];
+}
+
+interface RootState {
+  constructorSlice: ConstructorSliceState;
+}
 
 export default function BurgerConstructor() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,7 +74,7 @@ export default function BurgerConstructor() {
     setIsModalOpen(false);
   };
 
-  const SortableIngredient = ({
+  const SortableIngredient: FC<Props> = ({
     ingredient,
     moveIngredient,
     handleRemove,
@@ -51,15 +86,11 @@ export default function BurgerConstructor() {
 
     const [, drop] = useDrop({
       accept: "ingredient",
-      hover: (draggingItem) => {
-        if (draggingItem.ingredientId !== ingredientId) {
-          const updatedDraggingItem = {
-            ...draggingItem,
-            originId: draggingItem.ingredientId,
-          };
-          moveIngredient(draggingItem.ingredientId, ingredientId);
-          updatedDraggingItem.ingredientId = ingredientId;
-          draggingItem = updatedDraggingItem;
+      hover: (draggingItem: DragItem) => {
+        const item = draggingItem;
+        if (item.ingredientId !== ingredientId) {
+          moveIngredient(item.ingredientId, ingredientId);
+          item.ingredientId = ingredientId;
           dropResultRef.current = true;
         }
       },
@@ -86,7 +117,7 @@ export default function BurgerConstructor() {
           <DragIcon type="primary" />
           <ConstructorElement
             text={`${ingredient.name}`}
-            price={`${ingredient.price}`}
+            price={ingredient.price}
             extraClass="ml-3 mr-3"
             thumbnail={`${ingredient.image_mobile}`}
             handleClose={() => handleRemove(ingredientId)}
@@ -96,52 +127,70 @@ export default function BurgerConstructor() {
     );
   };
 
-  SortableIngredient.propTypes = sortableIngredientType.isRequired;
-
-  const { ingredients, bun } = useSelector((state) => state.constructorSlice);
+  const { ingredients, bun } = useSelector(
+    (state: RootState) => state.constructorSlice
+  );
 
   const totalPrice = useMemo(() => {
     let total = 0;
     if (bun) {
       total += bun.price * 2;
     }
-    ingredients.forEach((ingredient) => {
+    ingredients.forEach((ingredient: IIngredient) => {
       total += ingredient.price;
     });
+
     return total;
   }, [ingredients, bun]);
 
-  const Dustbin = ({ accept, type, text, className }) => {
-    const [localIngredient, setLocalIngredient] = useState([]);
+  const Dustbin: FC<DustbinProps> = ({ accept, type, text, className }) => {
+    const [localIngredient, setLocalIngredient] = useState<
+      IIngredientWithOriginalId[]
+    >([]);
 
-    const handleDrop = (item) => {
-      if (item.type === "bun") {
-        dispatch(updateBun(item));
-      } else if (item.type === "main" || item.type === "sauce") {
-        dispatch(addIngredients({ ...item, ingredientId: uuidv4() }));
-      }
-    };
-    const handleRemove = (ingredientId) => {
-      dispatch(removeIngredients(ingredientId));
+    const transformIngredients = (
+      ingredients: IIngredient[]
+    ): IIngredientWithOriginalId[] => {
+      return ingredients.map((ingredient) => ({
+        ...ingredient,
+        uniqueId: uuidv4(),
+      }));
     };
 
     useEffect(() => {
-      setLocalIngredient(ingredients);
+      const transformedIngredients = transformIngredients(ingredients);
+      setLocalIngredient(transformedIngredients);
     }, [ingredients]);
 
+    const handleDrop = (item: IIngredient) => {
+      if (item.type === "bun") {
+        dispatch(updateBun(item));
+      } else if (item.type === "main" || item.type === "sauce") {
+        const newItem: IIngredientWithOriginalId = {
+          ...item,
+          uniqueId: uuidv4(),
+        };
+        dispatch(addIngredients(newItem));
+      }
+    };
+    const handleRemove = (ingredientId: string) => {
+      dispatch(removeIngredients(ingredientId));
+    };
+
     const moveIngredients = useCallback(
-      (draggedId, hoverId) => {
+      (draggedUniqueId: string, hoverUniqueId: string) => {
         const draggedIndex = localIngredient.findIndex(
-          (i) => i.ingredientId === draggedId
+          (i) => i.uniqueId === draggedUniqueId
         );
         const hoverIndex = localIngredient.findIndex(
-          (i) => i.ingredientId === hoverId
+          (i) => i.uniqueId === hoverUniqueId
         );
 
         if (draggedIndex !== hoverIndex) {
           const updatedIngredients = [...localIngredient];
           const [draggedItem] = updatedIngredients.splice(draggedIndex, 1);
           updatedIngredients.splice(hoverIndex, 0, draggedItem);
+
           setLocalIngredient(updatedIngredients);
 
           dispatch(
@@ -153,10 +202,15 @@ export default function BurgerConstructor() {
     );
 
     const onDropEnd = () => {
-      setLocalIngredient(ingredients);
+      const transformedIngredients = transformIngredients(ingredients);
+      setLocalIngredient(transformedIngredients);
     };
 
-    const [{ canDrop, isOver }, dropRef] = useDrop(() => ({
+    const [{ canDrop, isOver }, dropRef] = useDrop<
+      IIngredient,
+      void,
+      { isOver: boolean; canDrop: boolean }
+    >(() => ({
       accept: "ingredient",
       drop: (item, monitor) => {
         if (monitor.didDrop()) {
@@ -177,16 +231,18 @@ export default function BurgerConstructor() {
       backgroundColor = "darkkhaki";
     }
 
+    const elementType: "top" | "bottom" | undefined =
+      type === "default" ? undefined : type;
     return (
       <div ref={dropRef} style={{ backgroundColor }} className={className}>
         {accept.includes("bun") ? (
           bun ? (
             <div className={constuctorStyle.element} key={bun._id}>
               <ConstructorElement
-                type={type}
+                type={elementType}
                 isLocked={true}
                 text={`${bun.name} ${text}`}
-                price={`${bun.price}`}
+                price={bun.price}
                 extraClass="ml-3 mr-3"
                 thumbnail={`${bun.image_mobile}`}
               />
@@ -197,8 +253,8 @@ export default function BurgerConstructor() {
         ) : localIngredient.length > 0 ? (
           localIngredient.map((ingredient) => (
             <SortableIngredient
-              key={ingredient.ingredientId}
-              ingredientId={ingredient.ingredientId}
+              key={ingredient.uniqueId}
+              ingredientId={ingredient.uniqueId}
               ingredient={ingredient}
               moveIngredient={moveIngredients}
               handleRemove={handleRemove}
@@ -212,9 +268,7 @@ export default function BurgerConstructor() {
     );
   };
 
-  Dustbin.propTypes = dustbinType.isRequired;
-
-  const [orderNumber, setOrderNumber] = useState(null);
+  const [orderNumber, setOrderNumber] = useState<number | null>(null);
   const handleOrder = () => {
     if (!isAuthenticated) {
       navigate("/login", { state: { from: location } });
@@ -235,7 +289,16 @@ export default function BurgerConstructor() {
       return;
     }
 
-    const orderData = { ingredients: [bunId, ...ingredientIds, bunId] };
+    const orderIngredients = [
+      { _id: bunId },
+      ...ingredientIds.map((id) => ({ _id: id })),
+      { _id: bunId },
+    ];
+
+    const orderData: ICreateOrderRequest = {
+      ingredients: orderIngredients,
+    };
+
     setIsLoadingOverride(true);
     openModal();
 
@@ -293,7 +356,7 @@ export default function BurgerConstructor() {
               items={ingredients}
               accept={["bun"]}
               label="bun"
-              type="button"
+              type="bottom"
               text="(низ)"
               className={constuctorStyle.bun_bottom}
             />
