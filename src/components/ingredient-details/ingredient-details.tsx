@@ -1,4 +1,3 @@
-import { ingredientDetailsType } from "../../utils/types";
 import ingredientsDetailsStyle from "./ingredient-details.module.css";
 
 interface IIngredientDetails {
@@ -62,5 +61,3 @@ export default function IngredientDetails({
     </div>
   );
 }
-
-IngredientDetails.propTypes = ingredientDetailsType.isRequired;

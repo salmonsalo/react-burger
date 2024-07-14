@@ -15,7 +15,6 @@ import { useGetIngredientsQuery } from "../../services/burger-ingedients/api";
 import { useDrag } from "react-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { openModalIngredient } from "../../services/burger-ingedients/ingredientModalSlice";
-import { boxType } from "../../utils/types";
 import { Link, useLocation } from "react-router-dom";
 import { IIngredient } from "../../services/burger-ingedients/api";
 import { RootState } from "../../services/store";
@@ -158,8 +157,6 @@ export default function BurgerIngredients() {
       </Link>
     );
   };
-
-  Box.propTypes = boxType.isRequired;
 
   const renderIngredientsTypes = useCallback(
     (types: TIngredientType) => {

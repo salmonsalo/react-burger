@@ -1,5 +1,4 @@
 import done from "../../images/done.svg";
-import { orderDetailsType } from "../../utils/types";
 import orderDetailsStyle from "./order-details.module.css";
 
 interface IOrder {
@@ -20,5 +19,3 @@ export default function OrderDetails({ order }: IOrder) {
     </div>
   );
 }
-
-OrderDetails.propTypes = orderDetailsType.isRequired;

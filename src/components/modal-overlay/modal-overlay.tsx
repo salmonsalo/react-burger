@@ -1,6 +1,5 @@
 import styleModalOverlay from "./modal-overlay.module.css";
 import React, { useRef } from "react";
-import PropTypes from "prop-types";
 
 interface IModalOverlayProps {
   children: React.ReactNode;

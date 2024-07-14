@@ -28,6 +28,7 @@ import { IIngredientWithOriginalId } from "../../services/burger-constructor/con
 
 interface DragItem {
   ingredientId: string;
+  uniqueId?: string;
 }
 
 interface Props {
@@ -87,7 +88,7 @@ export default function BurgerConstructor() {
     const [, drop] = useDrop({
       accept: "ingredient",
       hover: (draggingItem: DragItem) => {
-        const item = draggingItem;
+        const item = { ...draggingItem };
         if (item.ingredientId !== ingredientId) {
           moveIngredient(item.ingredientId, ingredientId);
           item.ingredientId = ingredientId;
