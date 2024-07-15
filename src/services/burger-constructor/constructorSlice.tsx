@@ -1,4 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { IIngredient } from "../burger-ingedients/api";
+
+export interface IIngredientWithOriginalId extends IIngredient {
+  uniqueId: string;
+}
+
+interface IConstructorState {
+  bun: IIngredient | null;
+  ingredients: (IIngredient | IIngredientWithOriginalId)[];
+}
 
 const initialState = {
   bun: null,
@@ -8,7 +18,10 @@ const constructorSlice = createSlice({
   name: "constructorSlice",
   initialState,
   reducers: {
-    addIngredients: (state, action) => {
+    addIngredients: (
+      state: IConstructorState,
+      action: PayloadAction<IIngredient>
+    ) => {
       state.ingredients.push(action.payload);
     },
     removeIngredients: (state, action) => {
@@ -32,7 +45,12 @@ const constructorSlice = createSlice({
   },
 });
 
-export const { addIngredients, removeIngredients, updateBun, moveIngredient, clearCart} =
-constructorSlice.actions;
+export const {
+  addIngredients,
+  removeIngredients,
+  updateBun,
+  moveIngredient,
+  clearCart,
+} = constructorSlice.actions;
 
 export const constructorReducer = constructorSlice.reducer;

@@ -2,16 +2,28 @@ import {
   Button,
   Input,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { useFetchUserQuery, useUpdateUserMutation } from "../../utils/api";
 import { useFormAndValidation } from "../../hooks/use-form-and-validation";
 
-export default function ProfileForm() {
-  const { data: userData, error, isLoading } = useFetchUserQuery();
+interface IFormValues {
+  name: string;
+  email: string;
+  password: string;
+}
+
+const initialFormValues: IFormValues = {
+  name: '',
+  email: '',
+  password: '',
+};
+
+const ProfileForm:React.FC = () => {
+  const { data: userData, error, isLoading } = useFetchUserQuery(undefined);
   const [updateUser] = useUpdateUserMutation();
   const [isEditing, setIsEditing] = useState(false);
   const { values, handleChange, resetForm, setIsValid } =
-    useFormAndValidation();
+    useFormAndValidation(initialFormValues);
 
   useEffect(() => {
     if (userData && userData.success) {
@@ -21,12 +33,12 @@ export default function ProfileForm() {
         email: user.email || "",
         password: "",
       };
-      resetForm(initialValues, {}, true);
+      resetForm(initialValues);
       setIsValid(true);
     }
   }, [userData, resetForm, setIsValid]);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     handleChange(event);
     if (!isEditing) {
       setIsEditing(true);
@@ -51,8 +63,6 @@ export default function ProfileForm() {
           email: user.email || "",
           password: "",
         },
-        {},
-        true
       );
     }
     setIsEditing(false);
@@ -75,6 +85,8 @@ export default function ProfileForm() {
           size={"default"}
           icon={"EditIcon"}
           extraClass="mb-6"
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
         />
         <Input
           type={"email"}
@@ -87,6 +99,8 @@ export default function ProfileForm() {
           size={"default"}
           icon={"EditIcon"}
           extraClass="mb-6"
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
         />
         <Input
           type={"password"}
@@ -99,6 +113,8 @@ export default function ProfileForm() {
           icon={"EditIcon"}
           extraClass="mb-6"
           onChange={handleInputChange}
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
         />
         {isEditing && (
           <div>
@@ -114,3 +130,5 @@ export default function ProfileForm() {
     </>
   );
 }
+
+export default ProfileForm;

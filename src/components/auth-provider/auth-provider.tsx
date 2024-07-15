@@ -1,22 +1,49 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import {
   requestPasswordReset,
   resetPassword,
   useLoginUserMutation,
   useLogutUserMutation,
 } from "../../utils/api";
+interface IAuthProviderProps {
+  children: ReactNode;
+}
+interface IUser {
+  name: string;
+  email: string;
+  password: string;
+}
+interface IAuthState {
+  user: IUser | null;
+  token: string | null;
+}
+interface IAuthContext {
+  isAuthenticated: boolean;
+  authState: IAuthState;
+  visitedForgotPassword: boolean;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => void;
+  requestPasswordResetEmail: (email: string) => Promise<boolean>;
+  resetPasswordWithToken: (token: string, password: string) => Promise<boolean>;
+  setVisitedForgotPassword: (success: boolean) => void;
+}
+export const AuthContext = createContext<IAuthContext | undefined>(undefined);;
+const useAuth = (): IAuthContext => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth должен использоваться внутри компонента AuthProvider');
+  }
+  return context;
+};
 
-export const AuthContext = createContext();
-const useAuth = () => useContext(AuthContext);
-
-const AuthProvider = ({ children }) => {
+const AuthProvider: React.FC<IAuthProviderProps>= ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [visitedForgotPassword, setVisitedForgotPassword] = useState(false);
   const [logoutUser] = useLogutUserMutation();
   const [loginUser] = useLoginUserMutation();
   const [authState, setAuthState] = useState({ user: null, token: null });
 
-  const login = async (email, password) => {
+  const login = async (email:string, password:string) => {
     try {
       const response = await loginUser({ email, password }).unwrap();
 
@@ -33,7 +60,6 @@ const AuthProvider = ({ children }) => {
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       setIsAuthenticated(true);
-
     } catch (error) {
       console.error("Ошибка входа:", error);
       throw error;
@@ -69,11 +95,11 @@ const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const requestPasswordResetEmail = async (email) => {
+  const requestPasswordResetEmail = async (email:string) => {
     return await requestPasswordReset(email);
   };
 
-  const resetPasswordWithToken = async (token, password) => {
+  const resetPasswordWithToken = async (token:string, password:string) => {
     return await resetPassword(token, password);
   };
 

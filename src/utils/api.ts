@@ -1,5 +1,14 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  BaseQueryFn,
+  createApi,
+  FetchArgs,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "../services/burger-ingedients/api";
+interface IRequestInitHeaders extends RequestInit {
+  headers: Headers;
+}
 
 const baseQuery = fetchBaseQuery({
   baseUrl: baseUrl,
@@ -12,7 +21,7 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-function checkResponse(res) {
+function checkResponse(res: Response) {
   if (!res.ok) {
     return res.json().then((errorData) => {
       throw new Error(errorData.message || "Произошла ошибка");
@@ -21,7 +30,7 @@ function checkResponse(res) {
   return res.json();
 }
 
-function request(url, options) {
+function request(url: string, options: IRequestInitHeaders) {
   return fetch(url, options)
     .then(checkResponse)
     .catch((error) => {
@@ -36,7 +45,7 @@ const refreshAuthToken = () => {
   }
   return request(`${baseUrl}/auth/token`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: new Headers({ "Content-Type": "application/json" }),
     body: JSON.stringify({ refreshToken }),
   })
     .then((data) => {
@@ -50,22 +59,49 @@ const refreshAuthToken = () => {
     });
 };
 
-const baseQueryWithReauth = async (args, api, extraOptions) => {
+
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
   if (
     result.error &&
     result.error.status === 401 &&
-    result.error.data?.message === "jwt expired"
+    (result.error.data as { message: string })?.message === "jwt expired"
   ) {
     const newAccessToken = await refreshAuthToken();
     if (newAccessToken) {
-      const newHeaders = new Headers(args.headers);
-      newHeaders.set("Authorization", `Bearer ${newAccessToken}`);
-      args = {
-        ...args,
-        headers: newHeaders,
-      };
+      if (typeof args === 'string') {
+        args = {
+          url: args,
+          headers: new Headers({
+            Authorization: `Bearer ${newAccessToken}`,
+          }),
+        };
+      } else {
+        let newHeaders: Headers;
+        if (args.headers instanceof Headers) {
+          newHeaders = new Headers(args.headers);
+        } else if (Array.isArray(args.headers)) {
+          newHeaders = new Headers();
+          args.headers.forEach(([key, value]) => newHeaders.set(key, value));
+        } else {
+          newHeaders = new Headers();
+          if (typeof args.headers === 'object' && args.headers !== null) {
+            Object.entries(args.headers).forEach(([key, value]) => {
+              if (value !== undefined) {
+                newHeaders.set(key, value as string);
+              }
+            });
+          }
+        }
+        newHeaders.set('Authorization', `Bearer ${newAccessToken}`);
+        args = { ...args, headers: newHeaders };
+      }
+
       result = await baseQuery(args, api, extraOptions);
     }
   }
@@ -73,20 +109,25 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
   return result;
 };
 
-export const requestPasswordReset = (email) => {
+
+export const requestPasswordReset = (email: string) => {
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
   return request(`${baseUrl}/password-reset`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: headers,
     body: JSON.stringify({ email }),
   })
     .then(() => true)
     .catch(() => false);
 };
 
-export const resetPassword = (token, password) => {
+export const resetPassword = (token: string, password: string) => {
+  const headers = new Headers();
+  headers.set("Content-Type", "application/json");
   return request(`${baseUrl}/password-reset/reset`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: headers,
     body: JSON.stringify({ token, password }),
   })
     .then(() => true)

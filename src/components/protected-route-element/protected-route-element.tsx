@@ -1,6 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../auth-provider/auth-provider";
-import { protectedRouteElement } from "../../utils/types";
 
 const ProtectedRouteElement = ({
   restrictMode = false,
@@ -34,6 +33,5 @@ const ProtectedRouteElement = ({
   }
 };
 
-ProtectedRouteElement.propTypes = protectedRouteElement.isRequired;
 
 export default ProtectedRouteElement;

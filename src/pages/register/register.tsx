@@ -5,14 +5,20 @@ import {
 import registerStyle from "./register.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useRegisterUserMutation } from "../../utils/api";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useFormAndValidation } from "../../hooks/use-form-and-validation";
 
-const initialState = { name: "", email: "", password: "" };
+interface IFormValues {
+  name: string;
+  email: string;
+  password: string;
+}
 
-function RegisterPage() {
+const initialState: IFormValues = { name: "", email: "", password: "" };
+
+const RegisterPage: React.FC = () => {
   const { values, handleChange, errors, resetForm } =
-    useFormAndValidation(initialState);
+    useFormAndValidation<IFormValues>(initialState);
   const [
     registerUser,
     {
@@ -24,10 +30,12 @@ function RegisterPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    resetForm(initialState, {}, false);
+    resetForm(initialState);
   }, [resetForm]);
 
-  const handleRegister = async (event) => {
+  const handleRegister: React.FormEventHandler<HTMLFormElement> = async (
+    event
+  ) => {
     event.preventDefault();
     const { name, email, password } = values;
 
@@ -43,9 +51,23 @@ function RegisterPage() {
       resetForm(initialState);
       navigate("/login");
     } else if (isRegisterError) {
-      alert(
-        `Ошибка регистрации: ${registerError?.message || "Неизвестная ошибка"}`
-      );
+      let errorMessage = "Неизвестная ошибка";
+
+      if (
+        registerError &&
+        "data" in registerError &&
+        typeof registerError.data === "object" &&
+        registerError.data !== null
+      ) {
+        const errorData = registerError.data as { message?: string };
+        if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+      } else if (registerError && "message" in registerError) {
+        errorMessage = (registerError as { message: string }).message;
+      }
+
+      alert(`Ошибка регистрации: ${errorMessage}`);
     }
   }, [isRegisterSuccess, isRegisterError, navigate, resetForm, registerError]);
 
@@ -67,6 +89,8 @@ function RegisterPage() {
             size={"default"}
             extraClass="mb-6"
             onChange={handleChange}
+            onPointerEnterCapture={undefined}
+            onPointerLeaveCapture={undefined}
           />
           <Input
             type={"email"}
@@ -78,6 +102,8 @@ function RegisterPage() {
             size={"default"}
             extraClass="mb-6"
             onChange={handleChange}
+            onPointerEnterCapture={undefined}
+            onPointerLeaveCapture={undefined}
           />
           <Input
             type={"password"}
@@ -90,6 +116,8 @@ function RegisterPage() {
             icon={"ShowIcon"}
             extraClass="mb-6"
             onChange={handleChange}
+            onPointerEnterCapture={undefined}
+            onPointerLeaveCapture={undefined}
           />
           <Button htmlType="submit">Зарегестрироваться</Button>
         </form>
@@ -104,6 +132,6 @@ function RegisterPage() {
       </div>
     </div>
   );
-}
+};
 
 export default RegisterPage;
