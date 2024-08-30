@@ -9,8 +9,32 @@ import { baseUrl } from "../services/burger-ingedients/api";
 interface IRequestInitHeaders extends RequestInit {
   headers: Headers;
 }
+export interface IOrder {
+  _id: string; 
+  status: string;
+  name: string;
+  number: number;
+  createdAt: string;
+  updatedAt: string;
+  ingredients: string[];
+}
 
-const baseQuery = fetchBaseQuery({
+export interface IOrdersResponse {
+  success: boolean;
+  orders: IOrder[];
+  total: number;
+  totalToday: number;
+}
+export interface ICreateOrderRequest {
+  ingredients: { _id: string }[];
+}
+export interface ICreateOrderResponse {
+  name: string;
+  success: boolean;
+  order: IOrder;
+}
+
+export const baseQuery = fetchBaseQuery({
   baseUrl: baseUrl,
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("accessToken");
@@ -38,7 +62,7 @@ function request(url: string, options: IRequestInitHeaders) {
       throw error;
     });
 }
-const refreshAuthToken = () => {
+export const refreshAuthToken = () => {
   const refreshToken = localStorage.getItem("refreshToken");
   if (!refreshToken) {
     return Promise.resolve(null);
@@ -60,7 +84,7 @@ const refreshAuthToken = () => {
 };
 
 
-const baseQueryWithReauth: BaseQueryFn<
+export const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
@@ -204,6 +228,16 @@ export const apiServise = createApi({
         }
       },
     }),
+    createOrder: builder.mutation<ICreateOrderResponse, ICreateOrderRequest>({
+      query: (orderData) => ({
+        url: "orders",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      }),
+    }),
   }),
 });
 
@@ -213,4 +247,5 @@ export const {
   useFetchUserQuery,
   useUpdateUserMutation,
   useLogutUserMutation,
+  useCreateOrderMutation
 } = apiServise;

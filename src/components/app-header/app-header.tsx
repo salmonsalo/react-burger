@@ -20,7 +20,7 @@ export default function AppHeader() {
               Конструктор
             </p>
           </NavLink>
-          <NavLink to="/" className={headerStyle.link}>
+          <NavLink to="/feed" className={headerStyle.link}>
             <div className="mr-2">
               <ListIcon type="secondary" />
             </div>

@@ -13,6 +13,9 @@ import ProtectedRouteElement from "../protected-route-element/protected-route-el
 import { AuthProvider } from "../auth-provider/auth-provider";
 import ProfileForm from "../../pages/profile-form/profile-form";
 import OrdersHistory from "../../pages/orders-history/orders-history";
+import OrderFeed from "../../pages/order-feed/order-feed";
+import OrderCard from "../order-card/order-card";
+import OrderCardPage from "../../pages/order-card-page/order-card-page";
 
 function App() {
   const location = useLocation();
@@ -51,6 +54,7 @@ function App() {
               <Route path="orders" element={<OrdersHistory />} />
             </Route>
           </Route>
+          <Route path="/profile/orders/:number" element={<OrderCardPage />} />
           <Route
             path="/reset-password"
             element={<ProtectedRouteElement restrictMode={true} />}
@@ -58,6 +62,8 @@ function App() {
             <Route index element={<ResetPasswordPage />} />
           </Route>
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/feed" element={<OrderFeed />} />
+          <Route path="/feed/:number" element={<OrderCardPage />}></Route>
         </Routes>
 
         {background && (
@@ -67,6 +73,22 @@ function App() {
               element={
                 <Modal title="Детали ингредиента" onClose={handleModalClose}>
                   <IngredientPage />
+                </Modal>
+              }
+            />
+            <Route
+              path="/feed/:number"
+              element={
+                <Modal onClose={handleModalClose}>
+                  <OrderCardPage />
+                </Modal>
+              }
+            />
+            <Route
+              path="/profile/orders/:number"
+              element={
+                <Modal onClose={handleModalClose}>
+                  <OrderCardPage />
                 </Modal>
               }
             />

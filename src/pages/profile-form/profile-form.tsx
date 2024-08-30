@@ -73,7 +73,7 @@ const ProfileForm:React.FC = () => {
 
   return (
     <>
-      <form className="mt-6 mb-6">
+      <form className="mt-20 mb-6">
         <Input
           type={"text"}
           placeholder={"Имя"}

@@ -10,7 +10,6 @@ import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 import {
   IIngredient,
-  useCreateOrderMutation,
 } from "../../services/burger-ingedients/api";
 import { useDrop, useDrag } from "react-dnd";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,6 +24,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../auth-provider/auth-provider";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IIngredientWithOriginalId } from "../../services/burger-constructor/constructorSlice";
+import { useCreateOrderMutation } from "../../utils/api";
 
 interface DragItem {
   ingredientId: string;

@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "../../utils/api";
 
 export const baseUrl = "https://norma.nomoreparties.space/api";
+
 export interface IIngredient {
   _id: string;
   name: string;
@@ -14,17 +16,7 @@ export interface IIngredient {
   image_mobile: string;
   image_large: string;
 }
-export interface IOrder {
-  number: number;
-}
-export interface ICreateOrderRequest {
-  ingredients: { _id: string }[];
-}
-export interface ICreateOrderResponse {
-  name: string;
-  success: boolean;
-  order: IOrder;
-}
+
 export interface IApiResponse {
   data: IIngredient[];
 }
@@ -37,18 +29,8 @@ export const ingredientsApi = createApi({
     getIngredients: builder.query<IApiResponse, void>({
       query: () => "ingredients",
     }),
-    createOrder: builder.mutation<ICreateOrderResponse, ICreateOrderRequest>({
-      query: (orderData) => ({
-        url: "orders",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(orderData),
-      }),
-    }),
   }),
 });
 
-export const { useGetIngredientsQuery, useCreateOrderMutation } =
+export const { useGetIngredientsQuery} =
   ingredientsApi;

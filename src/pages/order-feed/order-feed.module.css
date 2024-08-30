@@ -1,0 +1,55 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.content {
+  display: flex;
+  gap: 60px;
+  height: 100vh;
+  box-sizing: content-box;
+}
+.orders {
+  width: 584px;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.orders::-webkit-scrollbar {
+  width: 12px;
+}
+
+.orders::-webkit-scrollbar-track {
+  background: #2f2f37;
+}
+.orders::-webkit-scrollbar-thumb {
+  background: #8585ad;
+  border: 3px solid #2f2f37;
+  border-radius: 6px;
+}
+
+.info {
+  width: 580px;
+}
+.status {
+  display: flex;
+  justify-content: space-between;
+}
+.ready {
+  color: #00cccc;
+}
+
+.columns {
+  display: flex;
+}
+
+.column {
+  flex: 1;
+  margin-right: 10px;
+}
+
+.column:last-child {
+  margin-right: 0;
+}

@@ -6,7 +6,7 @@
   border-radius: 40px;
   background-color: #1c1c21;
   cursor: default;
-  z-index: 2;
+  z-index: 1000;
   width: 720px;
   max-height: 718px;
 }
