@@ -14,7 +14,7 @@ export default function OrderFeed() {
   const ingredientsData: IIngredient[] = ingredientsResponse?.data || [];
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className={orderFeedStyle.loading}>Загрузка...</div>;
   }
   const total = ordersAll?.total ?? 0;
   const totalToday = ordersAll?.totalToday ?? 0;
@@ -23,8 +23,6 @@ export default function OrderFeed() {
       ? (Object.values(ordersAll.entities) as IOrder[])
       : [];
 
-  console.log(ordersAll);
-  // Функция для получения последних заказов по статусу
   const getLastOrdersByStatus = (
     orders: IOrder[],
     status: string,
@@ -36,7 +34,6 @@ export default function OrderFeed() {
       .reverse();
   };
 
-  // Функция для разделения массива на две части
   const splitArrayInHalf = (
     array: IOrder[],
     halfSize: number
@@ -55,9 +52,7 @@ export default function OrderFeed() {
 
   const readyOrdersSplit = splitArrayInHalf(lastReadyOrders, 5);
   const inProgressOrdersSplit = splitArrayInHalf(lastInProgressOrders, 5);
-  // Добавляем функцию для проверки заказа
   const isValidOrder = (order: IOrder): boolean => {
-    // const ingredientIds = new Set(order.ingredients);
     const bunCount = order.ingredients.filter((id) =>
       ingredientsData.find(
         (ingredient) => ingredient._id === id && ingredient.type === "bun"
@@ -69,11 +64,9 @@ export default function OrderFeed() {
       )
     ).length;
 
-    // Проверка на наличие хотя бы двух булочек и одного другого ингредиента
     return bunCount >= 2 && otherIngredientsCount >= 1;
   };
 
-  // Фильтруем заказы перед отображением
   const validOrdersAllArray = ordersAllArray.filter(isValidOrder);
 
   return (

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { baseQueryWithReauth } from "../../utils/api";
+import { baseQueryWithReauth, IOrder, IOrdersResponse } from "../../utils/api";
 
 export const baseUrl = "https://norma.nomoreparties.space/api";
 
@@ -29,8 +29,13 @@ export const ingredientsApi = createApi({
     getIngredients: builder.query<IApiResponse, void>({
       query: () => "ingredients",
     }),
+    getOrderById: builder.query<IOrdersResponse, string>({
+      query: (number) => {
+        return `/orders/${number}`;
+      }
+    }),
   }),
 });
 
-export const { useGetIngredientsQuery} =
+export const { useGetIngredientsQuery, useGetOrderByIdQuery} =
   ingredientsApi;

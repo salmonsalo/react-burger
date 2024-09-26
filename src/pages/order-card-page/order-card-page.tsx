@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   useGetAllOrdersQuery,
   useGetProfileOrdersQuery,
@@ -6,39 +6,93 @@ import {
 import { IOrder } from "../../utils/api";
 import OrderCard from "../../components/order-card/order-card";
 import orderPageStyle from "./order-card-page.module.css";
+import { useGetOrderByIdQuery } from "../../services/burger-ingedients/api";
 
-const OrderCardPage = () => {
-  const { number } = useParams<{ number: string }>();
+const OrderCardPage: React.FC = () => {
+  const params = useParams<{ number?: string }>();
+  const number = params.number;
 
-  const { data: allOrdersData, isLoading: isLoadingAllOrders } = useGetAllOrdersQuery();
-  const { data: profileOrdersData, isLoading: isLoadingProfileOrders } = useGetProfileOrdersQuery();
+  const { data: allOrdersData, isLoading: isLoadingAllOrders } =
+    useGetAllOrdersQuery();
+  const { data: profileOrdersData, isLoading: isLoadingProfileOrders } =
+    useGetProfileOrdersQuery();
 
-  const allOrders = allOrdersData?.entities ? Object.values(allOrdersData.entities) : [];
-  const profileOrders = profileOrdersData?.entities ? Object.values(profileOrdersData.entities) : [];
-  const combinedOrders: IOrder[] = [...allOrders, ...profileOrders];
+  const shouldFetchOrderDirectly = number != null;
+  const {
+    data: restOrderData,
+    isLoading: isLoadingRestOrder,
+    error: orderError,
+  } = useGetOrderByIdQuery(number!, {
+    skip: !shouldFetchOrderDirectly,
+  });
 
-  if (isLoadingAllOrders || isLoadingProfileOrders) {
-      return <p>Loading...</p>;
+  const allOrders: IOrder[] = allOrdersData?.entities
+    ? Object.values(allOrdersData.entities as Record<string, IOrder>)
+    : [];
+  const profileOrders: IOrder[] = profileOrdersData?.entities
+    ? Object.values(profileOrdersData.entities as Record<string, IOrder>)
+    : [];
+  let combinedOrders = [...allOrders, ...profileOrders];
+
+  let order = combinedOrders.find(
+    (order) => order.number.toString() === number
+  );
+
+  if (!order && restOrderData && restOrderData.orders) {
+    order = restOrderData.orders.find(
+      (order) => order.number.toString() === number
+    );
+    if (order) {
+      combinedOrders = [...combinedOrders, order];
+    }
+  }
+
+  if (isLoadingAllOrders || isLoadingProfileOrders || isLoadingRestOrder) {
+    return (
+      <div className={`${orderPageStyle.content} mb-10`}>
+        <p className="text text_type_main-default">
+          <strong>Загрузка...</strong>
+        </p>
+      </div>
+    );
   }
 
   if (!number) {
-      return <p>Invalid order number</p>;
+    return (
+      <div className={`${orderPageStyle.content} mb-10`}>
+        <p className="text text_type_main-default">
+          <strong>Неверный номер заказа</strong>
+        </p>
+      </div>
+    );
   }
 
-  const order = combinedOrders.find((order) => order.number.toString() === number);
+  if (orderError) {
+    const errorMessage =
+      (orderError as { message?: string }).message ??
+      "Произошла неизвестная ошибка.";
+    return (
+      <div className={`${orderPageStyle.content} mb-10`}>
+        <p className="text text_type_main-default">
+          <strong>Ошибка: {errorMessage}</strong>
+        </p>
+      </div>
+    );
+  }
 
   if (!order) {
-      return <p>Order not found</p>;
+    return (
+      <div className={`${orderPageStyle.content} mb-10`}>
+        <p className="text text_type_main-default">
+          <strong>Заказ не найден</strong>
+        </p>
+      </div>
+    );
   }
-
 
   return (
     <div className={orderPageStyle.content}>
-      {order ? (
-        <OrderCard orderNumber={order.number} ordersData={combinedOrders} />
-      ) : (
-        <p>Order not found</p>
-      )}
+      <OrderCard orderNumber={order.number} ordersData={combinedOrders} />
     </div>
   );
 };

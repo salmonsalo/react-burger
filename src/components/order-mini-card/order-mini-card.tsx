@@ -37,7 +37,6 @@ const OrderMiniCard: React.FC<IOrderMiniCardProps> = ({
   const dispatch = useDispatch();
   const handleClick = () => {
     dispatch(openModalIngredient(order));
-    console.log("Clicked order:", order.number);
   };
 
   const path = location.pathname.includes("profile/orders")
@@ -52,7 +51,12 @@ const OrderMiniCard: React.FC<IOrderMiniCardProps> = ({
 
   const getIngredientsDetails = (ingredientIds: string[]): IIngredient[] => {
     return ingredientIds
-      .map((id) => ingredientsData.find((ingredient) => ingredient._id === id) as IIngredient)
+      .map(
+        (id) =>
+          ingredientsData.find(
+            (ingredient) => ingredient._id === id
+          ) as IIngredient
+      )
       .filter((ingredient) => ingredient !== undefined);
   };
 

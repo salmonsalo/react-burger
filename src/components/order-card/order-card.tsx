@@ -29,9 +29,6 @@ const OrderCard: React.FC<OrderDetailsProps> = ({
   const order = ordersData.find((order) => order.number === orderNumber);
   const ingredients = ingredientsResponse?.data as IIngredient[];
 
-  console.log("Order in OrderCard:", order);
-  console.log("Ingredients Response:", ingredientsResponse);
-
   const statusMap: { [key: string]: { text: string; color: string } } = {
     pending: { text: "Отменён", color: "red" },
     done: { text: "Выполнен", color: "#00cccc" },
@@ -62,11 +59,11 @@ const OrderCard: React.FC<OrderDetailsProps> = ({
   }, [order, ingredients]);
 
   if (isLoadingIngredients) {
-    return <p>Loading...</p>;
+    return <p>Загрузка...</p>;
   }
 
   if (!order) {
-    return <p>Order not found</p>;
+    return <p>Заказ не найден.</p>;
   }
 
   const totalPrice = orderIngredients.reduce(
@@ -76,63 +73,52 @@ const OrderCard: React.FC<OrderDetailsProps> = ({
 
   return (
     <div className={`${orderCardStyle.card} pl-10 pb-10`}>
-        <p
-          className={`${orderCardStyle.number} text text_type_digits-default mb-10`}
-        >
-          {`#${order.number}`}
-        </p>
-        <p className="text text_type_main-medium mb-3">{order.name}</p>
-        <span
-          className="text text_type_main-default mb-6"
-          style={{ color: statusMap[order.status].color }}
-        >
-          {statusMap[order.status].text}
-        </span>
-        <p className="text text_type_main-medium mt-15 mb-6">Состав:</p>
-        <div className={orderCardStyle.content}>
-          {orderIngredients.map((ingredient) => (
-            <div
-              key={ingredient._id}
-              className={`${orderCardStyle.list} mr-6 mb-4`}
-            >
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <div className={`${orderCardStyle.img_container} mr-4`}>
-                  <img
-                    src={ingredient.image_mobile}
-                    alt={ingredient.name}
-                    className={orderCardStyle.img}
-                  />
-                </div>
-
-                <p className="text text_type_main-default">{ingredient.name}</p>
+      <p
+        className={`${orderCardStyle.number} text text_type_digits-default mb-10`}
+      >
+        {`#${order.number}`}
+      </p>
+      <p className="text text_type_main-medium mb-3">{order.name}</p>
+      <span
+        className="text text_type_main-default mb-6"
+        style={{ color: statusMap[order.status].color }}
+      >
+        {statusMap[order.status].text}
+      </span>
+      <p className="text text_type_main-medium mt-15 mb-6">Состав:</p>
+      <div className={orderCardStyle.content}>
+        {orderIngredients.map((ingredient) => (
+          <div
+            key={ingredient._id}
+            className={`${orderCardStyle.list} mr-6 mb-4`}
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <div className={`${orderCardStyle.img_container} mr-4`}>
+                <img
+                  src={ingredient.image_mobile}
+                  alt={ingredient.name}
+                  className={orderCardStyle.img}
+                />
               </div>
-              <div className={orderCardStyle.price}>
-                <p className="text text_type_digits-default mr-2">{`${ingredient.quantity} x ${ingredient.price}`}</p>
-                <CurrencyIcon type="primary" />
-              </div>
+              <p className="text text_type_main-default">{ingredient.name}</p>
             </div>
-          ))}
-          {/* <div className={`${orderCardStyle.list} mt-10`}>
-            <FormattedDate
-              date={new Date(order.updatedAt)}
-              className="text text_type_main-default text_color_inactive"
-            />
             <div className={orderCardStyle.price}>
-              <p className="text text_type_digits-default mr-2">{totalPrice}</p>
-              <CurrencyIcon type="primary" />
-            </div>
-          </div> */}
-        </div>
-        <div className={`${orderCardStyle.list} mt-10`}>
-            <FormattedDate
-              date={new Date(order.updatedAt)}
-              className="text text_type_main-default text_color_inactive"
-            />
-            <div className={orderCardStyle.price}>
-              <p className="text text_type_digits-default mr-2">{totalPrice}</p>
+              <p className="text text_type_digits-default mr-2">{`${ingredient.quantity} x ${ingredient.price}`}</p>
               <CurrencyIcon type="primary" />
             </div>
           </div>
+        ))}
+      </div>
+      <div className={`${orderCardStyle.list} mt-10`}>
+        <FormattedDate
+          date={new Date(order.updatedAt)}
+          className="text text_type_main-default text_color_inactive"
+        />
+        <div className={orderCardStyle.price}>
+          <p className="text text_type_digits-default mr-2">{totalPrice}</p>
+          <CurrencyIcon type="primary" />
+        </div>
+      </div>
     </div>
   );
 };

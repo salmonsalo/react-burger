@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import IngredientDetails from "../../components/ingredient-details/ingredient-details";
 import { useGetIngredientsQuery } from "../../services/burger-ingedients/api";
 import { useMemo } from "react";
+import ingredientPage from "./ingredient-page.module.css";
 
 export default function IngredientPage() {
   const { ingredientId } = useParams();
@@ -11,15 +12,17 @@ export default function IngredientPage() {
     [ingredientsData, ingredientId]
   );
   return ingredient ? (
-    <IngredientDetails
-      image_large={ingredient.image_large}
-      name={ingredient.name}
-      calories={ingredient.calories}
-      proteins={ingredient.proteins}
-      fat={ingredient.fat}
-      carbohydrates={ingredient.carbohydrates}
-    />
+    <div className={ingredientPage.content}>
+      <IngredientDetails
+        image_large={ingredient.image_large}
+        name={ingredient.name}
+        calories={ingredient.calories}
+        proteins={ingredient.proteins}
+        fat={ingredient.fat}
+        carbohydrates={ingredient.carbohydrates}
+      />
+    </div>
   ) : (
-    <div>No ingredient data</div>
+    <div>Данные об ингредиентах отсутствуют.</div>
   );
 }

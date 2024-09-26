@@ -14,7 +14,6 @@ import { AuthProvider } from "../auth-provider/auth-provider";
 import ProfileForm from "../../pages/profile-form/profile-form";
 import OrdersHistory from "../../pages/orders-history/orders-history";
 import OrderFeed from "../../pages/order-feed/order-feed";
-import OrderCard from "../order-card/order-card";
 import OrderCardPage from "../../pages/order-card-page/order-card-page";
 
 function App() {

@@ -53,3 +53,10 @@
 .column:last-child {
   margin-right: 0;
 }
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
