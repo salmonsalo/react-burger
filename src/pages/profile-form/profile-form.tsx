@@ -5,6 +5,7 @@ import {
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useFetchUserQuery, useUpdateUserMutation } from "../../utils/api";
 import { useFormAndValidation } from "../../hooks/use-form-and-validation";
+import profileForm from "./profile-form.module.css";
 
 interface IFormValues {
   name: string;
@@ -13,12 +14,12 @@ interface IFormValues {
 }
 
 const initialFormValues: IFormValues = {
-  name: '',
-  email: '',
-  password: '',
+  name: "",
+  email: "",
+  password: "",
 };
 
-const ProfileForm:React.FC = () => {
+const ProfileForm: React.FC = () => {
   const { data: userData, error, isLoading } = useFetchUserQuery(undefined);
   const [updateUser] = useUpdateUserMutation();
   const [isEditing, setIsEditing] = useState(false);
@@ -57,23 +58,33 @@ const ProfileForm:React.FC = () => {
   const handleCancel = () => {
     if (userData && userData.success) {
       const { user } = userData;
-      resetForm(
-        {
-          name: user.name || "",
-          email: user.email || "",
-          password: "",
-        },
-      );
+      resetForm({
+        name: user.name || "",
+        email: user.email || "",
+        password: "",
+      });
     }
     setIsEditing(false);
   };
 
-  if (isLoading) return <div>Загрузка...</div>;
-  if (error) return <div>Ошибка загрузки данных. Обновите токен.</div>;
+  if (isLoading)
+    return (
+      <div className={profileForm.content}>
+        <p className="text text_type_main-default">Загрузка...</p>
+      </div>
+    );
+  if (error)
+    return (
+      <div className={profileForm.content}>
+        <p className="text text_type_main-default">
+          Ошибка загрузки данных. Обновите токен.
+        </p>
+      </div>
+    );
 
   return (
-    <>
-      <form className="mt-6 mb-6">
+    <div className="mt-20 mb-6">
+      <form>
         <Input
           type={"text"}
           placeholder={"Имя"}
@@ -127,8 +138,8 @@ const ProfileForm:React.FC = () => {
           </div>
         )}
       </form>
-    </>
+    </div>
   );
-}
+};
 
 export default ProfileForm;

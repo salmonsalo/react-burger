@@ -8,10 +8,7 @@ import {
 import { useEffect, useState, useRef, useCallback, useMemo, FC } from "react";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
-import {
-  IIngredient,
-  useCreateOrderMutation,
-} from "../../services/burger-ingedients/api";
+import { IIngredient } from "../../services/burger-ingedients/api";
 import { useDrop, useDrag } from "react-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -25,6 +22,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../auth-provider/auth-provider";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IIngredientWithOriginalId } from "../../services/burger-constructor/constructorSlice";
+import { useCreateOrderMutation } from "../../utils/api";
 
 interface DragItem {
   ingredientId: string;
@@ -270,6 +268,8 @@ export default function BurgerConstructor() {
   };
 
   const [orderNumber, setOrderNumber] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const handleOrder = () => {
     if (!isAuthenticated) {
       navigate("/login", { state: { from: location } });
@@ -311,6 +311,9 @@ export default function BurgerConstructor() {
       })
       .catch((error) => {
         console.error("Не удалось создать заказ:", error);
+        if (error.status === 403) {
+          setErrorMessage("Не удалось создать заказ. Обновите токен.");
+        }
       })
       .finally(() => {
         setTimeout(() => {
@@ -322,6 +325,7 @@ export default function BurgerConstructor() {
   const handleClose = () => {
     closeModal();
     dispatch(clearCart());
+    setErrorMessage(null);
   };
 
   const Preloader = () => {
@@ -382,6 +386,12 @@ export default function BurgerConstructor() {
                 <Modal onClose={handleClose}>
                   {isLoading || isLoadingOverride ? (
                     <Preloader />
+                  ) : errorMessage ? (
+                    <div className={`${constuctorStyle.error} mb-10`}>
+                      <p className="text text_type_main-default">
+                        {errorMessage}
+                      </p>
+                    </div>
                   ) : (
                     <OrderDetails order={orderNumber} />
                   )}
