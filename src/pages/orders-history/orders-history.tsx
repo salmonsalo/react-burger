@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import OrderMiniCard from "../../components/order-mini-card/order-mini-card";
 import { useGetIngredientsQuery } from "../../services/burger-ingedients/api";
 import { IIngredient } from "../../services/burger-ingedients/api";
@@ -33,8 +34,7 @@ export default function OrdersHistory() {
 
   const sortedOrdersArray = ordersProfileData?.entities
     ? Object.values(ordersProfileData.entities).sort(
-        (a, b) =>
-          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        (a, b) => +new Date(b.updatedAt) - +new Date(a.updatedAt)
       )
     : [];
 

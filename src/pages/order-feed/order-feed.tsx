@@ -71,13 +71,7 @@ export default function OrderFeed() {
 
   return (
     <section className={orderFeedStyle.main}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "start",
-          flexDirection: "column",
-        }}
-      >
+      <div className={orderFeedStyle.central}>
         <h2 className="text text_type_main-large mt-10 mb-8">Лента заказов</h2>
         <div className={orderFeedStyle.content}>
           <div className={`${orderFeedStyle.orders} pr-2`}>

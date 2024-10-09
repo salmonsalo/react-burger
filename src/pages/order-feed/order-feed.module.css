@@ -4,6 +4,11 @@
   justify-content: center;
   align-items: center;
 }
+.central {
+  display: flex;
+  justify-content: start;
+  flex-direction: column;
+}
 .content {
   display: flex;
   gap: 60px;
