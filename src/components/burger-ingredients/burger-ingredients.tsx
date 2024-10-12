@@ -221,8 +221,8 @@ export default function BurgerIngredients() {
         </div>
       </div>
       <div ref={containerRef} className={ingredientsStyle.content}>
-        <div ref={sectionsRefs.bun}>{renderIngredientsTypes("bun")}</div>
-        <div ref={sectionsRefs.main}>{renderIngredientsTypes("main")}</div>
+        <div ref={sectionsRefs.bun} data-testid="bun-item">{renderIngredientsTypes("bun")}</div>
+        <div ref={sectionsRefs.main}   data-testid="ingredient-item" >{renderIngredientsTypes("main")}</div>
         <div ref={sectionsRefs.sauce}>{renderIngredientsTypes("sauce")}</div>
       </div>
     </section>

@@ -341,15 +341,21 @@ export default function BurgerConstructor() {
       <div className="pt-25">
         <div className="ml-4 mr-4">
           <div className={constuctorStyle.content}>
-            <Dustbin
-              items={ingredients}
-              accept={["bun"]}
-              label="bun"
-              type="top"
-              text="(вверх)"
-              className={constuctorStyle.bun_top}
-            />
-            <div className={constuctorStyle.content_unlocked}>
+            <div data-testid="basket-bun-top">
+              <Dustbin
+                items={ingredients}
+                accept={["bun"]}
+                label="bun"
+                type="top"
+                text="(вверх)"
+                className={constuctorStyle.bun_top}
+              />
+            </div>
+
+            <div
+              className={constuctorStyle.content_unlocked}
+              data-testid="basket-ingredient"
+            >
               <Dustbin
                 items={ingredients}
                 accept={["main", "sauce"]}
@@ -357,14 +363,17 @@ export default function BurgerConstructor() {
                 className={constuctorStyle.ingredients}
               />
             </div>
-            <Dustbin
-              items={ingredients}
-              accept={["bun"]}
-              label="bun"
-              type="bottom"
-              text="(низ)"
-              className={constuctorStyle.bun_bottom}
-            />
+            <div data-testid="basket-bun-bottom">
+              <Dustbin
+                items={ingredients}
+                accept={["bun"]}
+                label="bun"
+                type="bottom"
+                text="(низ)"
+                className={constuctorStyle.bun_bottom}
+              />
+            </div>
+
             <div className={`${constuctorStyle.payment} mt-6`}>
               <div className={constuctorStyle.price}>
                 <p className="text text_type_digits-medium mr-2">
@@ -379,6 +388,7 @@ export default function BurgerConstructor() {
                 extraClass="ml-10 mr-8"
                 onClick={handleOrder}
                 disabled={isLoading}
+                data-testid="create-order-button"
               >
                 {isLoading ? "В процессе.." : "Оформить заказ"}
               </Button>
@@ -393,7 +403,9 @@ export default function BurgerConstructor() {
                       </p>
                     </div>
                   ) : (
-                    <OrderDetails order={orderNumber} />
+                    <div data-testid="order-success-message">
+                      <OrderDetails order={orderNumber} />
+                    </div>
                   )}
                 </Modal>
               )}

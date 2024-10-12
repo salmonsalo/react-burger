@@ -66,7 +66,11 @@ function LoginPage() {
             errorText={"Введите корректный E-mail"}
             size={"default"}
             extraClass="mb-6"
-            onChange={handleChange} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
+            onChange={handleChange}
+            onPointerEnterCapture={undefined}
+            onPointerLeaveCapture={undefined}
+            data-testid="email_input"
+          />
           <Input
             type={"password"}
             placeholder={"Пароль"}
@@ -77,8 +81,16 @@ function LoginPage() {
             size={"default"}
             icon={"ShowIcon"}
             extraClass="mb-6"
-            onChange={handleChange} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}          />
-          <Button htmlType="submit" disabled={!isValid}>
+            onChange={handleChange}
+            onPointerEnterCapture={undefined}
+            onPointerLeaveCapture={undefined}
+            data-testid="password_input"
+          />
+          <Button
+            htmlType="submit"
+            disabled={!isValid}
+            data-testid="login_button"
+          >
             Войти
           </Button>
         </form>
