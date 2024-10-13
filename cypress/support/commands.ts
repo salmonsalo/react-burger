@@ -35,3 +35,34 @@
 //     }
 //   }
 // }
+Cypress.Commands.add("openFirstIngredient", () => {
+    cy.get('[data-testid="ingredient-item"]').first().click();
+  });
+  
+  Cypress.Commands.add("closeModal", () => {
+    cy.get('[data-testid="close-modal-button"]').click();
+    cy.get('[data-testid="modal"]').should("not.exist");
+  });
+  
+  Cypress.Commands.add("closeModalWithOverlay", () => {
+    cy.get('[data-testid="modal-overlay"]').trigger("click", { force: true });
+    cy.get('[data-testid="modal"]').should("not.exist");
+  });
+  
+  Cypress.Commands.add("closeModalWithEsc", () => {
+    cy.get("body").type("{esc}");
+    cy.get('[data-testid="modal"]').should("not.exist");
+  });
+
+declare global {
+    namespace Cypress {
+      interface Chainable {
+        openFirstIngredient(): Chainable<void>;
+        closeModal(): Chainable<void>;
+        closeModalWithOverlay(): Chainable<void>;
+        closeModalWithEsc(): Chainable<void>;
+      }
+    }
+  }
+  
+  export {} 
