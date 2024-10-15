@@ -1,0 +1,8 @@
+[{
+    "accessToken": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ODI5MjBjODU2Nzc3MDAxYmIxZWViYiIsImlhdCI6MTcyODY1NDQ4MCwiZXhwIjoxNzI4NjU1NjgwfQ.5TCkn9DBh0C8_HS4uETGNqVq2DMYyRsb8xC_0Xs8Ju4",
+    "refreshToken": "3093822f2a96d73faa5239bb2d667509a66ca1de6ae169bd3daaaec23a2cccc4e6a0dc3bf1bfac07",
+    "user": {
+        "email": "bo@ba.com",
+        "name": "Bo"
+    }
+}]

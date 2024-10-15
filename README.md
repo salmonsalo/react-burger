@@ -2,6 +2,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+Проект доступен по адресу [https://salmonsalo.github.io/react-burger/index.html](https://salmonsalo.github.io/react-burger/index.html).
+
 ## Available Scripts
 
 In the project directory, you can run:

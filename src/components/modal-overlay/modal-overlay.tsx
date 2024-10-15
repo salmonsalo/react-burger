@@ -20,6 +20,7 @@ export default function ModalOverlay({ children, onClose }: IModalOverlayProps) 
       className={styleModalOverlay.overlay}
       ref={modalRef}
       onClick={closeModal}
+      data-testid="modal-overlay"
     >
       {children}
     </div>

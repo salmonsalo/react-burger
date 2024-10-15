@@ -10,7 +10,7 @@ interface IConstructorState {
   ingredients: (IIngredient | IIngredientWithOriginalId)[];
 }
 
-const initialState = {
+export const initialState = {
   bun: null,
   ingredients: [],
 };
@@ -54,3 +54,4 @@ export const {
 } = constructorSlice.actions;
 
 export const constructorReducer = constructorSlice.reducer;
+export default constructorSlice;
